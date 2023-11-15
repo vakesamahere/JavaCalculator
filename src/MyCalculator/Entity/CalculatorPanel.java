@@ -13,6 +13,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class CalculatorPanel extends JPanel implements ActionListener,ComponentListener{
     public JTextField diaRangeField;
@@ -112,9 +113,8 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             public void run() {
                 running=true;
                 long stratTime = System.currentTimeMillis();
-                String expString = Calculator.calString(varExp.getValueArea().getText());
-                String[] range;
-                range = diaRangeField.getText().split(",");
+                String[] range=diaRangeField.getText().split(",");
+                String[] exps=varExp.getValueArea().getText().split(";");
                 Double start=0.0;
                 Double end=1.0;
                 int n =10;
@@ -125,8 +125,13 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
                     n = Integer.parseInt(range[2]);
                 }catch(Exception e){}
                 //System.err.println(String.format("(%s) %s %s %s %s", expString,start,end,n,varName));
-                List<Double>[] outputs = Calculator.diaGen(expString,varName,start,end,n);
-                diagramDisplayer.inputss.add(outputs);
+                diagramDisplayer.inputss = new ArrayList<>();
+                for(String expString:exps){
+                    //System.err.println(expString);
+                    expString = Calculator.calString(expString);
+                    List<Double>[] outputs = Calculator.diaGen(expString,varName,start,end,n);
+                    diagramDisplayer.inputss.add(outputs);
+                }
                 //diagramDisplayer.refreshSize();
                 long endTime = System.currentTimeMillis();
                 long cost = endTime-stratTime;

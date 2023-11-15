@@ -49,11 +49,6 @@ public class DiagramDisplayer extends JDialog implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        this.remove(drawPanel);
-        drawPanel=new DrawPanel();
-        this.add(drawPanel);
-        revalidate();
-        
     }
 
     @Override
@@ -82,7 +77,6 @@ class DrawPanel extends JPanel{
     @Override
     public void paint(Graphics g){
         super.paint(g);
-        //g.clearRect(0, 0, size.x, size.y);
         Lobby.getCalculatorPanel().getDiagramDisplayer().refreshSize();
         //System.out.println(String.format("(%s %s %s %s %s %s)", xRatio,yRatio,xlimit,ylimit,center.x,center.y));
         g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
@@ -93,6 +87,7 @@ class DrawPanel extends JPanel{
         
     }
     public void calSize(List<List<Double>[]> inputss) {
+        pointss = new ArrayList<>();
         for(List<Double>[] inputs:inputss){
             List<Double> xs=inputs[0];
             List<Double> ys=inputs[1];
@@ -133,8 +128,8 @@ class DrawPanel extends JPanel{
     }
     public void calR() {
         r=Math.min((int)(transferToPosX(xlimit)/2/pointss.get(0).get(0).length),oR);
-        r=Math.max(r,1);
-        //System.out.println(r);
+        r=Math.max(r,2);
+        //System.out.println(String.format("r=%s", r));
     }
     public void calRatio(){
         xRatio=size.x/xlimit/2;
