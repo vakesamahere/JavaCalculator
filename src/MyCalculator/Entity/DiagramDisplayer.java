@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import MyCalculator.Lobby;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DiagramDisplayer extends JDialog implements ComponentListener {
@@ -38,7 +39,7 @@ public class DiagramDisplayer extends JDialog implements ComponentListener {
     }
     public void refreshSize(){
         selfSize = this.getSize();
-        drawPanel.center = new Point(selfSize.width/2,(int)(selfSize.height*0.4));
+        drawPanel.center = new Point(selfSize.width/2,(int)(selfSize.height*0.45));
         selfSize = new Dimension((int)(selfSize.width*panelSizeRatioX),(int)(selfSize.height*panelSizeRatioY));
         drawPanel.size=new Point(selfSize.width,selfSize.height);
         drawPanel.calLimit(inputss);
@@ -72,16 +73,27 @@ class DrawPanel extends JPanel{
     Double yRatio;
     int n=10;
     int r=7;
+    List<Color> colors = new ArrayList<>();
     final int oR=7;
     List<List<int[]>> pointss = new ArrayList<>();
+    public DrawPanel(){
+        colors.add(Color.red);
+        colors.add(Color.blue);
+        colors.add(Color.green);
+        colors.add(Color.yellow);
+        colors.add(Color.pink);
+        colors.add(Color.gray);
+    }
     @Override
     public void paint(Graphics g){
         super.paint(g);
         Lobby.getCalculatorPanel().getDiagramDisplayer().refreshSize();
         //System.out.println(String.format("(%s %s %s %s %s %s)", xRatio,yRatio,xlimit,ylimit,center.x,center.y));
+        g.setColor(Color.BLACK);
         g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
         g.drawLine(center.x,center.y-size.y/2, center.x, size.y+size.y/2);//axeY
         for(List<int[]> points : pointss){
+            g.setColor(colors.get(pointss.indexOf(points)));
             drawPoints(g,points.get(0),points.get(1));
         }
         
