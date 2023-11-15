@@ -1,0 +1,140 @@
+package MyCalculator.Entity;
+import javax.swing.*;
+
+import MyCalculator.Lobby;
+import MyCalculator.Tools.Calculator;
+import MyCalculator.Tools.ComponentEditor;
+
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class VariableRigisterLabel extends JPanel implements ActionListener,ComponentListener{
+    private JLabel nameSign = new JLabel("Var");
+    private JLabel valueSign = new JLabel("Value");
+    private JButton nameDisplayer = new JButton();
+    private JButton register = new JButton("New Var");
+    private JPanel variablesPanel = new JPanel(null);
+    private JScrollPane varScrollPane = new JScrollPane();
+    private List<RegistedVar> varList = new ArrayList<>();
+
+    public VariableRigisterLabel(String name,JComponent father,double posX,double posY,double sizeX,double sizeY){
+        this.setLayout(null);
+        this.addComponentListener(this);
+        nameDisplayer.setText(name);
+        ComponentEditor.initializeComponentBody(this,father,posX,posY,sizeX,sizeY);
+        setBorder(BorderFactory.createLineBorder(Color.gray));
+        register.addActionListener(this);
+        nameDisplayer.addActionListener(this);
+
+        varScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        varScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        refreshComponent();
+    }
+    public JPanel getVarPanel(){
+        return variablesPanel;
+    }
+    public JScrollPane getVarScrollPane(){
+        return varScrollPane;
+    }
+    public List<RegistedVar> getVarList(){
+        return varList;
+    }
+    public int getVarCount(){
+        return variablesPanel.getComponentCount();
+    }
+    public int varPos(RegistedVar va){
+        return varList.indexOf(va);
+    }
+    public void delVar(RegistedVar va){
+        variablesPanel.remove(va.getSelfPanel());
+        varList.remove(va);
+        refreshVarDisplay();
+    }
+    public void refreshVarDisplay(){
+        for(RegistedVar va:varList){
+            va.refreshDisplay();
+        }
+    }
+    public void refreshComponent(){
+        ComponentEditor.initializeComponentBody(varScrollPane, this,0.1, 0.25,0.8,0.6);
+        ComponentEditor.initializeComponentBody(variablesPanel,varScrollPane,0,0,1,1);
+        
+        varScrollPane.setViewportView(variablesPanel);
+        variablesPanel.setPreferredSize(new Dimension(variablesPanel.getSize()));
+        varScrollPane.getVerticalScrollBar().setUnitIncrement((int)(RegistedVar.getHeightRatio()*getBounds().height));
+        
+        ComponentEditor.initializeComponentBody(nameSign, this, 0.11,0.15,0.3,0.1);
+        ComponentEditor.initializeComponentBody(valueSign, this, 0.25,0.15,0.3,0.1);
+        ComponentEditor.initializeComponentBody(nameDisplayer, this, 0.1,0.02,0.3,0.1);
+        ComponentEditor.initializeComponentBody(register, this, 0.45,0.02,0.45,0.1);
+        
+        for(JComponent component:Arrays.asList(nameSign,valueSign,nameDisplayer,register)){
+            component.setFont(Lobby.signFont);
+        }
+        for(RegistedVar rv:varList){
+            rv.refreshComponent();
+        }
+    }
+    public void createNewVariable(){
+        varList.add(new RegistedVar(this));
+        varList.get(varList.size()-1).refreshComponent();
+        //this.repaint();
+    }
+    public void clearList(){
+        for(RegistedVar va:varList){
+            variablesPanel.remove(va.getSelfPanel());
+        }
+        variablesPanel.setPreferredSize(new Dimension(varScrollPane.getSize()));
+        ComponentEditor.refreshBar(varScrollPane.getVerticalScrollBar());
+
+        varList = new ArrayList<>();
+        repaint();
+    }
+    public String replaceVars(String expString) {
+        for(RegistedVar va:varList){
+            expString=Calculator.replaceVar(expString, va);
+        }
+        return expString;
+    }
+    public void varMoveUp(RegistedVar va) {
+        int pos = varList.indexOf(va);
+        if(pos==0)return;
+        varList.add(pos-1, va);
+        varList.remove(pos+1);
+        refreshVarDisplay();
+    }
+    public void varMoveDown(RegistedVar va) {
+        int pos = varList.indexOf(va);
+        if(pos==varList.size()-1)return;
+        varList.add(pos+2, va);
+        varList.remove(pos);
+        refreshVarDisplay();
+    }
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource()==register){//regist
+            createNewVariable();
+        }
+        if(e.getSource()==nameDisplayer){//regist
+            clearList();
+        }
+    }
+    @Override
+    public void componentResized(ComponentEvent e) {
+        refreshComponent();
+    }
+    @Override
+    public void componentMoved(ComponentEvent e) {
+    }
+    @Override
+    public void componentShown(ComponentEvent e) {
+    }
+    @Override
+    public void componentHidden(ComponentEvent e) {
+    }
+}
