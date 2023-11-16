@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import MyCalculator.Lobby;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class DiagramDisplayer extends JDialog implements ComponentListener {
@@ -93,7 +92,7 @@ class DrawPanel extends JPanel{
         g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
         g.drawLine(center.x,center.y-size.y/2, center.x, size.y+size.y/2);//axeY
         for(List<int[]> points : pointss){
-            g.setColor(colors.get(pointss.indexOf(points)));
+            g.setColor(colors.get(pointss.indexOf(points)%colors.size()));
             drawPoints(g,points.get(0),points.get(1));
         }
         
