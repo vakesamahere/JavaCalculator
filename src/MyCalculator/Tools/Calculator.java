@@ -135,4 +135,57 @@ public class Calculator {
         return expString;
 
     }
+    public static void analysis(List<Double> ys) {
+        Double max=ys.get(0);
+        Double min=ys.get(0);
+        int posMax=0;
+        int posMin=0;
+        List<Integer> posRoots = new ArrayList<>();
+        List<Integer> posMaxs = new ArrayList<>();
+        List<Integer> posMins = new ArrayList<>();
+        List<Integer> posExts = new ArrayList<>();
+        List<Double> roots = new ArrayList<>();
+        List<Double> maxs = new ArrayList<>();
+        List<Double> mins = new ArrayList<>();
+        List<Double> extremes = new ArrayList<>();
+        int pos;
+        int times = ys.size()-2;
+        boolean rootFounded=false;
+        for(pos=1;pos<times;pos++){
+            Double left = ys.get(pos-1);
+            Double self = ys.get(pos);
+            Double right = ys.get(pos+1);
+            boolean lUp =(left-self<=0);
+            boolean rUp =(right-self>=0);
+            Double absSelf= Math.abs(self);
+            if(!rootFounded&&(absSelf<1E-3)&&((Math.abs(left)-absSelf>0)&&(Math.abs(right)-absSelf>0))){
+                roots.add(self);
+                posRoots.add(pos);
+                rootFounded=true;
+            }
+            if(lUp^rUp){//extreme value
+                if(lUp){//极大值
+                    maxs.add(self);
+                    posMaxs.add(pos);
+                    if(self>max){//最大值
+                        max=self;
+                        posMax=pos;
+                    }
+                }else{//极小值
+                    mins.add(self);
+                    posMins.add(pos);
+                    if(self<min){//最小值
+                        min=self;
+                        posMin=pos;
+                    }
+                }
+                extremes.add(self);
+                posExts.add(pos);
+                int extSize = extremes.size();
+                if(extSize>1&&((self>=0)^(extremes.get(extSize-2)>=0)))rootFounded=false;
+            }
+            //return...
+            
+        }
+    }
 }
