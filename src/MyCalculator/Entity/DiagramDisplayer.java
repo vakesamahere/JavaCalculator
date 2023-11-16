@@ -1,8 +1,7 @@
 package MyCalculator.Entity;
 
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -11,24 +10,27 @@ import MyCalculator.Lobby;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
 
-public class DiagramDisplayer extends JDialog implements ComponentListener {
+public class DiagramDisplayer extends JDialog implements MouseMotionListener{
     private static final double formSizeRatio = 0.3;
     private static final double panelSizeRatioX = 0.9;
     private static final double panelSizeRatioY = 0.7;
     private DrawPanel drawPanel;
     private Dimension selfSize=null;
+    private static final String title = "Diagram Displayer";
+    private static final NumberFormat nf = NumberFormat.getInstance();
 
     public List<List<Double>[]> inputss;
     //List:[ResultA:[Xs:[Double,...],Ys:[...]],ResultB:[Xs:[...],Ys:[...]],...]
 
     public DiagramDisplayer(){
         drawPanel=new DrawPanel();
-        this.setTitle("Diagram Displayer");
+        this.setTitle(title);
         this.setLayout(new GridLayout(1,1));
         this.add(drawPanel);
         calSrceenSize(formSizeRatio);
-        this.addComponentListener(this);
+        this.addMouseMotionListener(this);
     }
     public void calSrceenSize(double ratio){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -46,30 +48,37 @@ public class DiagramDisplayer extends JDialog implements ComponentListener {
         drawPanel.calSize(inputss);
         drawPanel.calR();
     }
-
     @Override
-    public void componentResized(ComponentEvent e) {
+    public void mouseDragged(MouseEvent e) {
     }
-
     @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
+    public void mouseMoved(MouseEvent e) {
+        int pos=MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
+        int index = drawPanel.calPosMouse(pos);
+        if(index<0||index>=drawPanel.arrayLen)return;
+        List<String> ys = new ArrayList<>();
+        for(List<Double>[] inputs:inputss){
+            ys.add(nf.format(inputs[1].get(index)));
+        }
+        String output="";
+        output+=String.format("||x=%.4f||", inputss.get(0)[0].get(index));
+        output+=String.format("y=%s", String.join("; ",ys));
+        this.setTitle(title+output);
     }
 }
 class DrawPanel extends JPanel{
+    final int tickCount = 5;
+    final NumberFormat nf = NumberFormat.getInstance();
     Point size=null;
     Point center = null;
     Double xlimit=1.0;
     Double ylimit=1.0;
     Double xRatio;
     Double yRatio;
+    int posXLeft;
+    int posXRight;
+    int posDelta;
+    int arrayLen;
     int n=10;
     int r=7;
     List<Color> colors = new ArrayList<>();
@@ -91,11 +100,18 @@ class DrawPanel extends JPanel{
         g.setColor(Color.BLACK);
         g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
         g.drawLine(center.x,center.y-size.y/2, center.x, size.y+size.y/2);//axeY
+        for(int i=0-tickCount;i<=tickCount;i++){
+            g.drawString(nf.format(xlimit*i/tickCount), center.x+size.x*i/tickCount/2, center.y);
+            g.drawString(nf.format(ylimit*i/tickCount), center.x, center.y+size.y*i/tickCount/2);
+        }
         for(List<int[]> points : pointss){
             g.setColor(colors.get(pointss.indexOf(points)%colors.size()));
             drawPoints(g,points.get(0),points.get(1));
         }
         
+    }
+    public int calPosMouse(int pos){
+        return (pos-posXLeft)*arrayLen/posDelta;
     }
     public void calSize(List<List<Double>[]> inputss) {
         pointss = new ArrayList<>();
@@ -103,13 +119,18 @@ class DrawPanel extends JPanel{
             List<Double> xs=inputs[0];
             List<Double> ys=inputs[1];
             int len=xs.size();
+            arrayLen=len;
             int[] outxs = new int[len];
             int[] outys = new int[len];
-            for(int i=0;i<len;i++){
+            int i;
+            posXLeft=transferToPosX(xs.get(0));
+            for(i=0;i<len;i++){
                 outxs[i]=transferToPosX(xs.get(i));
                 outys[i]=transferToPosY(ys.get(i));
                 //System.err.println(String.format("[x,y][%s]%s %s>>>%s %s",i,xs[i],ys[i], outxs[i],outys[i]));
             }
+            posXRight=transferToPosX(xs.get(i-1));
+            posDelta=posXRight-posXLeft;
             //drawPoints(getGraphics(), outxs, outys);
             List<int[]> temp = new ArrayList<>();
             temp.add(outxs);
