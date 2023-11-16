@@ -3,15 +3,18 @@ import MyCalculator.Lobby;
 import MyCalculator.Entity.Expression;
 import MyCalculator.Entity.ProgressBar;
 import MyCalculator.Entity.Variable;
+import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operators.*;
 
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
 import java.util.regex.*;
 import java.util.List;
 import java.util.ArrayList;
 
 public class Calculator {
-    public static String calString(String expString){
+    public static NumberFormat nf = NumberFormat.getInstance();
+    public static String calString(String expString){//预处理用户输入的算式字符串
         expString = "("+expString+")";
         //\t\n
         expString=expString.replace("\t"," ");
@@ -42,7 +45,7 @@ public class Calculator {
 
         return expString;
     }
-    public static List<Double>[] diaGen(String expString,String varName,Double start,Double end,int n){
+    public static List<Double>[] listGen(String expString,String varName,Double start,Double end,int n){//生成x，y列表
         List<Double>[] outputs = new List[2];
         Variable va = new Variable(varName,"&");
         Double unit = (end-start)/n;
@@ -62,7 +65,7 @@ public class Calculator {
             progress+=unitIcre;
             bar.setProgress(progress);
             xs.add(x);
-            String tempString=expString.replaceAll("&",x.toString());
+            String tempString=expString.replaceAll("&",nf.format(x));
             ys.add(Double.parseDouble(cal(tempString)));
             //System.err.println(String.format("%s %s", temp[0],temp[1]));
             x+=unit;
@@ -73,7 +76,7 @@ public class Calculator {
         //******************************************************
         return outputs;
     }
-    public static String cal(String expString){//预处理后
+    public static String cal(String expString){//预处理后进行单次运算
         //System.err.println("\nCAL:"+expString);
         Expression expression = new Expression();
         boolean flag = getOperator(expString,expression);
@@ -87,7 +90,7 @@ public class Calculator {
             return expString;
         }
     }
-    public static boolean getOperator(String expString,Expression expression){
+    public static boolean getOperator(String expString,Expression expression){//字符串中获得最优先的运算符
         //for each operator whose level higher than the times of examination:examine every char
         for(int i=0;i<Operator.operators.size();i++){
             Matcher matcher = Operator.patterns.get(i).matcher(expString);
@@ -135,57 +138,88 @@ public class Calculator {
         return expString;
 
     }
-    public static void analysis(List<Double> ys) {
-        Double max=ys.get(0);
-        Double min=ys.get(0);
-        int posMax=0;
-        int posMin=0;
-        List<Integer> posRoots = new ArrayList<>();
-        List<Integer> posMaxs = new ArrayList<>();
-        List<Integer> posMins = new ArrayList<>();
-        List<Integer> posExts = new ArrayList<>();
-        List<Double> roots = new ArrayList<>();
-        List<Double> maxs = new ArrayList<>();
-        List<Double> mins = new ArrayList<>();
-        List<Double> extremes = new ArrayList<>();
+    public static void analysis(//获得数据
+        List<Double> xs,
+        List<Double> ys,
+
+        List<Double> rootsX,
+        List<Double> maxsX,
+        List<Double> minsX,
+        List<Double> extsX,
+        List<Double> mostsX,
+        List<Double> rootsY,
+        List<Double> maxsY,
+        List<Double> minsY,
+        List<Double> extsY,
+        List<Double> mostsY
+        ) {//找到解，极值，最值
+        int len=ys.size();
+        Double max;
+        Double min;
+        int posMax;
+        int posMin;
+        if(ys.get(0)<ys.get(len-1)){
+            max=ys.get(len-1);
+            posMax=len-1;
+            min=ys.get(0);
+            posMin=0;
+        }else{
+            max=ys.get(0);
+            posMax=0;
+            min=ys.get(len-1);
+            posMin=len-1;
+        }
+
+        rootsY.clear();
+        maxsY.clear();
+        minsY.clear();
+        extsY.clear();
+
+        rootsX.clear();
+        maxsX.clear();
+        minsX.clear();
+        extsX.clear();
+
         int pos;
-        int times = ys.size()-2;
+        int times = len-2;
         boolean rootFounded=false;
         for(pos=1;pos<times;pos++){
             Double left = ys.get(pos-1);
             Double self = ys.get(pos);
             Double right = ys.get(pos+1);
-            boolean lUp =(left-self<=0);
-            boolean rUp =(right-self>=0);
+            boolean lUp =(left-self<0);
+            boolean rUp =(right-self>0);
             Double absSelf= Math.abs(self);
-            if(!rootFounded&&(absSelf<1E-3)&&((Math.abs(left)-absSelf>0)&&(Math.abs(right)-absSelf>0))){
-                roots.add(self);
-                posRoots.add(pos);
+            if(!rootFounded&&((Math.abs(left)-absSelf>=0)&&(Math.abs(right)-absSelf>=0))&&((left>0)^(right>0))){
+                rootsY.add(self);
+                rootsX.add(xs.get(pos));
                 rootFounded=true;
             }
             if(lUp^rUp){//extreme value
                 if(lUp){//极大值
-                    maxs.add(self);
-                    posMaxs.add(pos);
+                    maxsY.add(self);
+                    maxsX.add(xs.get(pos));
                     if(self>max){//最大值
                         max=self;
                         posMax=pos;
                     }
                 }else{//极小值
-                    mins.add(self);
-                    posMins.add(pos);
+                    minsY.add(self);
+                    minsX.add(xs.get(pos));
                     if(self<min){//最小值
                         min=self;
                         posMin=pos;
                     }
                 }
-                extremes.add(self);
-                posExts.add(pos);
-                int extSize = extremes.size();
-                if(extSize>1&&((self>=0)^(extremes.get(extSize-2)>=0)))rootFounded=false;
+                extsY.add(self);
+                extsX.add(xs.get(pos));
+                int extSize = extsY.size();
+                if(extSize<=1)rootFounded=false;else if (((self>=0)^(extsY.get(extSize-2)>=0)))rootFounded=false;
             }
-            //return...
-            
         }
+        mostsY.add(max);
+        mostsY.add(min);
+        mostsX.add(xs.get(posMax));
+        mostsX.add(xs.get(posMin));
     }
 }

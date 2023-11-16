@@ -13,7 +13,7 @@ public class Multiplicative extends Operator{
     public final static boolean left = true;
     public final static boolean right = true;
     public final static int commaCount = 3;
-    private final static String varString = "`";
+    private final static String varString = "#";
     //6parameters:min=4,max=4 [x,a,b,fx,d(=1)]
     public Multiplicative(){
     }

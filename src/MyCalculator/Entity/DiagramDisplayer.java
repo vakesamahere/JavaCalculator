@@ -19,7 +19,7 @@ public class DiagramDisplayer extends JDialog implements ComponentListener {
     private DrawPanel drawPanel;
     private Dimension selfSize=null;
 
-    public List<List<Double>[]> inputss = new ArrayList<>();
+    public List<List<Double>[]> inputss;
     //List:[ResultA:[Xs:[Double,...],Ys:[...]],ResultB:[Xs:[...],Ys:[...]],...]
 
     public DiagramDisplayer(){

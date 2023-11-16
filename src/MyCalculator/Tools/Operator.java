@@ -14,7 +14,7 @@ public abstract class Operator {
             "DefiniteIntegral","Sum","Multiplicative"
         ),
         Arrays.asList(
-            "Bracket","Exp","Ln","Sin","Cos","Tan","Log","Arcsin","Arccos","Arctan"
+            "Bracket","Exp","Ln","Sin","Cos","Tan","Log","Arcsin","Arccos","Arctan","Absolute"
         ),
         Arrays.asList(
             "Percent"
