@@ -27,24 +27,6 @@ public class Keyboard extends JDialog{
             }
         
         });
-        // 获取JDialog的根面板
-        JRootPane rootPane = getRootPane();
-        // 创建一个Action对象，用于处理键盘事件
-        Action action = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 在这里写上您想要执行的动作，例如关闭对话框
-                dispose();
-            }
-        };
-        // 为Action对象设置一个名称，用于绑定
-        String actionName = "close";
-        // 将Action对象添加到根面板的ActionMap中
-        rootPane.getActionMap().put(actionName, action);
-        // 创建一个KeyStroke对象，用于表示键盘事件，例如按下Esc键
-        KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        // 将KeyStroke对象和Action对象的名称绑定到根面板的InputMap中
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, actionName);
     }
     public void iniKeys() {
         newKey(0, "+", "+", '+', 1);

@@ -12,7 +12,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class ExpressionCollector extends JDialog implements DocumentListener,FocusListener {
-    private static final double formSizeRatio = 0.2;
+    private static final double formSizeRatio = 0.5;
     JTextArea textArea;
     JScrollPane scrollPane;
     Variable target;
