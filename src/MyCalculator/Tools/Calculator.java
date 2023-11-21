@@ -28,6 +28,7 @@ public class Calculator {
         expString=expString.replace("）", ")");
         expString=expString.replace("-", " "+Minus.pattern+" ");
         expString=expString.replace("^", " "+Power.pattern+" ");
+        expString=expString.replace("∫", DefiniteIntegral.pattern);
         expString=expString.replace(",", " , ");
         expString=expString.replace("(", "( ");
         expString=expString.replace(")", " ) ");//
