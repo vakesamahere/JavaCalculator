@@ -3,6 +3,7 @@ package MyCalculator;
 import javax.swing.*;
 
 import MyCalculator.Entity.CalculatorPanel;
+import MyCalculator.Entity.Keyboard;
 import MyCalculator.Entity.LogDisplayer;
 import MyCalculator.Entity.ProgressBar;
 import MyCalculator.Entity.VariableRigisterLabel;
@@ -28,6 +29,7 @@ public class Lobby extends JFrame implements ComponentListener{
     private static JPanel formPanel = new JPanel();
     private static CalculatorPanel calculatorPanel = new CalculatorPanel();
     private static ProgressBar progressBar = new ProgressBar();
+    private static Keyboard keyboard = new Keyboard();
     
     private static LogDisplayer logDisplayer = new LogDisplayer("log");
     private static VariableRigisterLabel constVariablesManager;
