@@ -99,7 +99,7 @@ class DrawPanel extends JPanel{
         //System.out.println(String.format("(%s %s %s %s %s %s)", xRatio,yRatio,xlimit,ylimit,center.x,center.y));
         g.setColor(Color.BLACK);
         g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
-        g.drawLine(center.x,center.y-size.y/2, center.x, size.y+size.y/2);//axeY
+        g.drawLine(center.x,center.y-size.y/2, center.x, center.y+size.y/2);//axeY
         for(int i=0-tickCount;i<=tickCount;i++){
             g.drawString(nf.format(xlimit*i/tickCount), center.x+size.x*i/tickCount/2, center.y);
             g.drawString(nf.format(ylimit*i/tickCount), center.x, center.y+size.y*i/tickCount/2);

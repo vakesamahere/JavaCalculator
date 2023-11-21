@@ -36,6 +36,7 @@ public class Calculator {
         expString=expString.replace(")", " ) ");//
         //variables
         expString=Lobby.getConstVarMgr().replaceVars(expString);
+        //abs
         //e,pi
         expString = expString.replaceAll("([^A-za-z0-9])[e]([^A-za-z0-9])", String.format("%s%s%s","$1",String.valueOf(Math.E),"$2"));
         expString = expString.replaceAll("([^A-za-z0-9])[p][i]([^A-za-z0-9])", String.format("%s%s%s","$1",String.valueOf(Math.PI),"$2"));
