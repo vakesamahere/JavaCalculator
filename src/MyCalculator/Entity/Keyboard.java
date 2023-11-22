@@ -11,6 +11,7 @@ public class Keyboard extends JDialog{
     private List<Character> hotKeys = new ArrayList<>();
     private JTextArea output;
     private ExpressionEditor parent;
+    private int index=0;
     public Keyboard(ExpressionEditor eed){
         parent=eed;
         output=parent.textArea;
@@ -29,37 +30,37 @@ public class Keyboard extends JDialog{
         });
     }
     public void iniKeys() {
-        newKey(0, "+", "+", '+', 1);
-        newKey(1, "-", "-", '-', 1);
-        newKey(2, "x", "*", '*', 1);
-        newKey(3, "÷", "/", '/', 1);
+        newKey("+", "+", '+', 1);
+        newKey("-", "-", '-', 1);
+        newKey("x", "*", '*', 1);
+        newKey("÷", "/", '/', 1);
+        newKey("^", "^", '^', 1);
 
-        newKey(4, "^", "^", '^', 1);
-        newKey(5, "%", "%", '%', 1);
-        newKey(6, "()", "()", '(', 1);
-        newKey(7, "abs", "abs()", '\\', 4);
+        newKey("%", "%", '%', 1);
+        newKey("()", "()", '(', 1);
+        newKey("abs", "abs()", '|', 4);
+        newKey("exp", "exp()", 'E', 4);
+        newKey("ln", "ln()", 'L', 3);
 
-        newKey(8, "exp", "exp()", 'E', 4);
-        newKey(9, "ln", "ln()", 'L', 3);
-        newKey(10, "log", "log(,)", ' ', 4);
-        newKey(11, "π", "π", 'P', 1);
+        newKey("π", "π", 'P', 1);
+        newKey("log", "log(,)", '\\', 4);
+        newKey("∑", "∑(,,,)", '<', 2);
+        newKey("∏", "∏(,,,)", '>', 2);
+        newKey("∫", "∫(,,,)", 'I', 2);
 
-        newKey(12, "sin", "sin()", 'S', 4);
-        newKey(13, "cos", "cos()", 'C', 4);
-        newKey(14, "tan", "tan()", 'T', 4);
-        newKey(15, "∑", "∑(,,,)", '<', 2);
+        newKey("sin", "sin()", 'S', 4);
+        newKey("cos", "cos()", 'C', 4);
+        newKey("tan", "tan()", 'T', 4);
 
-        newKey(16, "arcsin", "arcsin()", '!', 7);
-        newKey(17, "arccos", "arccos()", '@', 7);
-        newKey(18, "arctan", "arctan()", '#', 7);
-        newKey(19, "∏", "∏(,,,)", '>', 2);
+        newKey("arcsin", "arcsin()", '!', 7);
+        newKey("arccos", "arccos()", '@', 7);
+        newKey("arctan", "arctan()", '#', 7);
 
-        newKey(20, "∫", "∫(,,,)", 'I', 2);
         
     }
-    public void newKey(int index,String name,String va,char key,int cOffset){
+    public void newKey(String name,String va,char key,int cOffset){
         keys[index]=new Key(name,va,key,cOffset,this);
-        add(keys[index]);
+        add(keys[index++]);
         hotKeys.add(key);
     }
     public void addValue(String value,int offset) {
@@ -68,6 +69,7 @@ public class Keyboard extends JDialog{
         output.setCaretPosition(pos+offset);
     }
     public boolean keyTyped(char keyChar) {
+        if(keyChar==' ')return false;
         int index=hotKeys.indexOf(keyChar);
         if(index==-1)return false;
         keys[index].click();

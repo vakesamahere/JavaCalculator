@@ -8,6 +8,8 @@ import javax.swing.text.Document;
 import MyCalculator.Lobby;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -17,6 +19,7 @@ public class ExpressionCollector extends JDialog implements DocumentListener,Foc
     JScrollPane scrollPane;
     Variable target;
     Boolean passive;
+    Font font;
     public ExpressionCollector(Variable va){
         target = va;
         calSrceenSize(formSizeRatio);
@@ -31,7 +34,16 @@ public class ExpressionCollector extends JDialog implements DocumentListener,Foc
         Document doc = textArea.getDocument();
         doc.addDocumentListener(this);
         textArea.addFocusListener(this);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e){
+                double size=50*Math.min(e.getComponent().getHeight(),e.getComponent().getWidth())/540;
+                font = new Font("Microsoft Yahei", Font.PLAIN, (int)size);
+                textArea.setFont(font);
+            }
+        });
     }
+    
     public void calSrceenSize(double ratio){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)(ratio*screenSize.getWidth());
