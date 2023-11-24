@@ -102,7 +102,7 @@ class DrawPanel extends JPanel{
         g.drawLine(center.x,center.y-size.y/2, center.x, center.y+size.y/2);//axeY
         for(int i=0-tickCount;i<=tickCount;i++){
             g.drawString(nf.format(xlimit*i/tickCount), center.x+size.x*i/tickCount/2, center.y);
-            g.drawString(nf.format(ylimit*i/tickCount), center.x, center.y+size.y*i/tickCount/2);
+            g.drawString(nf.format(-ylimit*i/tickCount), center.x, center.y+size.y*i/tickCount/2);
         }
         for(List<int[]> points : pointss){
             g.setColor(colors.get(pointss.indexOf(points)%colors.size()));

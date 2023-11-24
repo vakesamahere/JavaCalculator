@@ -50,6 +50,7 @@ public class Calculator {
         return expString;
     }
     public static List<Double>[] listGen(String expString,String varName,Double start,Double end,int n){//生成x，y列表
+        
         List<Double>[] outputs = new List[2];
         Variable va = new Variable(varName,"&");
         Double unit = (end-start)/n;
