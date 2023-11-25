@@ -13,41 +13,52 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Calculator {
+    public static boolean remainVar;
+    public static boolean execute;
     public static NumberFormat nf = NumberFormat.getInstance();
     public static String calString(String expString){//预处理用户输入的算式字符串
         expString = "("+expString+")";
+        //variables
+        remainVar=true;
+        execute=false;
+        while(remainVar){//留存变量
+            execute=false;
+            remainVar=false;
+            expString=dealOperator(expString);
+            expString=Lobby.getConstVarMgr().replaceVars(expString);
+            if(!execute)break;
+        }
+
+        expString = expString.substring(1,expString.length()-2);//)->)' '
+        Lobby.getLogDisplayer().addLog("\n********\n"+expString+"\n********\n");
+
+        return expString;
+    }
+    public static String dealOperator(String expString){
         //\t\n
         expString=expString.replace("\t"," ");
         expString=expString.replace("\n"," ");
         //Minus,Power,',','()'
-        expString=expString.replace("{", "(");
-        expString=expString.replace("[", "(");
-        expString=expString.replace("（", "(");
-        expString=expString.replace("}", ")");
-        expString=expString.replace("]", ")");
-        expString=expString.replace("）", ")");
-        expString=expString.replace("-", " "+Minus.pattern+" ");
-        expString=expString.replace("^", " "+Power.pattern+" ");
+        expString=expString.replace("-", Minus.pattern);
+        expString=expString.replace("^", Power.pattern);
         expString=expString.replace("∫", DefiniteIntegral.pattern);
         expString=expString.replace("∑", Sum.pattern);
         expString=expString.replace("∏", Multiplicative.pattern);
         expString=expString.replace(",", " , ");
         expString=expString.replace("(", "( ");
-        expString=expString.replace(")", " ) ");//
-        //variables
-        expString=Lobby.getConstVarMgr().replaceVars(expString);
+        expString=expString.replace("[", "[ ");
+        expString=expString.replace("]", " ] ");
+        expString=expString.replace(")", " ) ");
         //abs
         //e,pi
         expString = expString.replaceAll("([^A-za-z0-9])[e]([^A-za-z0-9])", String.format("%s%s%s","$1",String.valueOf(Math.E),"$2"));
         expString = expString.replaceAll("([^A-za-z0-9])[p][i]([^A-za-z0-9])", String.format("%s%s%s","$1",String.valueOf(Math.PI),"$2"));
         //Normal Bracket
         expString = expString.replaceAll("([^A-Za-z]{1})[(]", "$1B(");
-        //if (expString.charAt(0)=='m')expString="0"+expString;
-
-        expString = expString.substring(1,expString.length()-2);//)->)' '
-        Lobby.getLogDisplayer().addLog("\n********\n"+expString+"\n********\n");
-
+        //multi space
+        expString = expString.replaceAll("[\\s]+", " ");
         return expString;
+
     }
     public static List<Double>[] listGen(String expString,String varName,Double start,Double end,int n){//生成x，y列表
         
@@ -127,6 +138,7 @@ public class Calculator {
         return false;
     }
     public static String replaceVar(String expString,Variable va){
+        execute=true;
         String regex="";
         for(char c:va.getName().toCharArray()){
             regex+=String.format("[%s]", c);
@@ -134,11 +146,13 @@ public class Calculator {
         regex=String.format("([^A-za-z0-9])%s([^A-za-z0-9])", regex);
         Pattern pat = Pattern.compile(regex);
         Matcher mat = pat.matcher(expString);
+        if(mat.matches())remainVar=true;
+        String replaced = va.getValue();
         //do it twice to avoid (given x=1 and x+x+x+x->1+x+1+x)
-        expString=mat.replaceAll(String.format("%s%s%s","$1",va.getValue(),"$2"));
+        expString=mat.replaceAll(String.format("%s%s%s","$1",replaced,"$2"));
         //Lobby.getLogDisplayer().addLog(String.format("Replacement Completed:",expString));
         mat = pat.matcher(expString);
-        expString=mat.replaceAll(String.format("%s%s%s","$1",va.getValue(),"$2"));
+        expString=mat.replaceAll(String.format("%s%s%s","$1",replaced,"$2"));
         //Lobby.getLogDisplayer().addLog(String.format("Replacement Completed:",expString));
         return expString;
 

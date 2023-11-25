@@ -1,0 +1,55 @@
+package MyCalculator.Tools.Operators;
+import MyCalculator.Entity.Expression;
+import MyCalculator.Tools.Calculator;
+import MyCalculator.Tools.Operator;
+import java.util.ArrayList;
+import java.util.List;
+public class MatrixJointRow extends Operator {
+    public final static String pattern = "jr";
+    public final static boolean bracketlike=true;
+    public final static boolean left = true;
+    public final static boolean right = true;
+    public final static int commaCount = 16;
+    public final static int maxSize = 16;
+    public MatrixJointRow(){
+        parameters = new String[maxSize];
+    }
+    public String solve(){
+        //System.err.println("Solve:"+parameters[0]);
+        int len=0;
+        String[] array0 = stringToArray(Calculator.cal(parameters[0]));
+        String[][] matrix0 = arrayToMatrix(array0);
+        if(matrix0.length==0||matrix0[0].length==0){
+            matrix0 = new String[array0.length][1];
+            for(int i=0;i<array0.length;i++)matrix0[i][0]=array0[i];
+        }
+        len+=matrix0[0].length;
+        List<String> temp[] = new List[matrix0.length];
+        for(int i=0;i<matrix0.length;i++){
+            temp[i]=new ArrayList<>();
+            for(String item:matrix0[i])temp[i].add(item);
+        }
+        for(int i=1;i<maxSize;i++){
+            if(parameters[i]==null)break;
+            String[] array = stringToArray(Calculator.cal(parameters[i]));
+            String[][] matrix = arrayToMatrix(array);
+            if(matrix.length==0||matrix[0].length==0){
+                matrix = new String[array.length][1];
+                for(int k=0;k<array.length;k++)matrix[k][0]=array[k];
+            }
+            len+=matrix[0].length;
+            for(int k=0;k<matrix.length;k++)for(String item:matrix[k])temp[k].add(item);
+        }
+        String[][] result = new String[matrix0.length][len];
+        for(int i=0;i<matrix0.length;i++)for(int j=0;j<len;j++)result[i][j]=temp[i].get(j);
+        String output = Operator.matrixToString(result);
+        //Lobby.getLogDisplayer().addLog(String.format("[Output]MatrixJointRow(%s)=%s", num,output));
+        
+        return output;
+    }
+    public static void loadSelf(String expString,Expression expression,int index){
+        
+        expression.o = new MatrixJointRow();
+        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+    }
+}

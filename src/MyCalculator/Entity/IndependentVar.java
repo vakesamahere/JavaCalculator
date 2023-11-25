@@ -9,7 +9,6 @@ public class IndependentVar extends Variable implements ComponentListener {
     private boolean useFormatFont = false;
     public IndependentVar(String str,Boolean isUseFormatFont) {
         super(str,true);
-        dialog=new ExpressionEditor(this);
         selfPanel.addComponentListener(this);
         useFormatFont=isUseFormatFont;
         if(useFormatFont)valueText.setFont(Lobby.formatFont);

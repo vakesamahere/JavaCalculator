@@ -3,6 +3,7 @@ package MyCalculator;
 import javax.swing.*;
 
 import MyCalculator.Entity.CalculatorPanel;
+import MyCalculator.Entity.ExpressionEditor;
 import MyCalculator.Entity.Keyboard;
 import MyCalculator.Entity.LogDisplayer;
 import MyCalculator.Entity.ProgressBar;
@@ -16,7 +17,7 @@ import java.awt.event.ComponentListener;
 
 public class Lobby extends JFrame implements ComponentListener{
     //settings
-    private static final double formSizeRatio = 0.5;
+    public static final double formSizeRatio = 0.75;
     private static int formatFontSize;
     private static int smallFormatFontSize;
     private static int signFontSize;
@@ -26,6 +27,8 @@ public class Lobby extends JFrame implements ComponentListener{
     public static Font boldSignFont;
     public static Font smallFormatFont;
     //component
+    public static Keyboard keyboard=new Keyboard();
+
     private static JPanel formPanel = new JPanel();
     private static CalculatorPanel calculatorPanel = new CalculatorPanel();
     private static ProgressBar progressBar = new ProgressBar();
@@ -111,6 +114,13 @@ public class Lobby extends JFrame implements ComponentListener{
     }
     public static LogDisplayer getLogDisplayer(){
         return logDisplayer;
+    }
+    public static Keyboard getKeyBoard(){
+        return keyboard;
+    }
+    public static void useKeyBoard(ExpressionEditor eed){
+        eed.setKeyboard(keyboard);
+        keyboard.setParent(eed);
     }
     @Override
     public void componentResized(ComponentEvent e) {

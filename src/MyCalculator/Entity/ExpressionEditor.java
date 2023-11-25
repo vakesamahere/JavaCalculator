@@ -1,30 +1,52 @@
 package MyCalculator.Entity;
 
-import java.awt.event.*;
-
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 
-public class ExpressionEditor extends ExpressionCollector implements KeyListener {
+import MyCalculator.Lobby;
+
+import java.awt.*;
+import java.awt.event.*;
+
+public class ExpressionEditor extends JDialog implements DocumentListener,FocusListener,KeyListener,ComponentListener  {
+    private static final double formSizeRatio = 0.4;
     private Keyboard keyboard;
     private CaretListener caretListener;
     private int dot=0;
     private boolean shifting=false;
-    public ExpressionEditor(Variable va) {
-        super(va);
-        setAlwaysOnTop(true);
-        keyboard = new Keyboard(this);
+    JTextArea textArea;
+    JScrollPane scrollPane;
+    Variable target;
+    Boolean passive;
+    Font font;
+    public ExpressionEditor(Variable va){
+        target = va;
+        calSrceenSize(formSizeRatio);
+        this.setLocationRelativeTo(null);
+        textArea= new JTextArea();
+        refreshFont();
+        textArea.setLineWrap(true);
+        scrollPane = new JScrollPane(textArea);
+        this.add(scrollPane);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        Document doc = textArea.getDocument();
+        doc.addDocumentListener(this);
+        textArea.addFocusListener(this);
+        Lobby.useKeyBoard(this);
         this.addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentShown(ComponentEvent e) {
-                keyboard.setSize(getSize());
-                keyboard.setVisible(true);
+            public void componentResized(ComponentEvent e){
+                refreshFont();
             }
-            public void componentHidden(ComponentEvent e) {
-                keyboard.setVisible(false);
-            }
-            
+
         });
+        setAlwaysOnTop(true);
+        this.addComponentListener(this);
         caretListener = new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent e) {
@@ -33,6 +55,23 @@ public class ExpressionEditor extends ExpressionCollector implements KeyListener
         };
         textArea.addCaretListener(caretListener);
         textArea.addKeyListener(this);
+    }
+    public void refreshFont() {
+        double size=50*Math.min(getHeight(),getWidth())/540;
+        font = new Font("Microsoft Yahei", Font.PLAIN, (int)size);
+        textArea.setFont(font);
+    }
+    public void calSrceenSize(double ratio){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)(ratio*screenSize.getWidth());
+        int height = (int)(ratio*screenSize.getHeight());
+        this.setSize(width,height);
+    }
+    public void setKeyboard(Keyboard k){
+        keyboard = k;
+    }
+    public JTextArea getTextArea(){
+        return textArea;
     }
     public void setDot(){
         textArea.setCaretPosition(dot);
@@ -90,14 +129,27 @@ public class ExpressionEditor extends ExpressionCollector implements KeyListener
 
         }
     @Override
+    public void insertUpdate(DocumentEvent e) {output();}
+    @Override
+    public void removeUpdate(DocumentEvent e) {output();}
+    @Override
+    public void changedUpdate(DocumentEvent e) {output();}
+    public void output(){
+        target.getValueArea().setText(textArea.getText());
+    }
+    @Override
     public void focusGained(FocusEvent e) {
-        super.focusGained(e);
+        Lobby.useKeyBoard(this);
+        textArea.setText(target.getValueArea().getText());
+        textArea.setForeground(Color.BLACK);
+        this.setTitle("Input the value of "+target.getName());
         textArea.setCaretPosition(dot);
     }
     @Override
     public void focusLost(FocusEvent e) {
         textArea.getCaret().setVisible(true);
-        if(!keyboard.isFocused())super.focusLost(e);
+        if(keyboard.isFocused())return;
+        textArea.setForeground(Color.WHITE);
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -132,6 +184,18 @@ public class ExpressionEditor extends ExpressionCollector implements KeyListener
         }
         
     }
-
-    
+    @Override
+    public void componentShown(ComponentEvent e) {
+        Lobby.useKeyBoard(this);
+        keyboard.setVisible(true);
+    }
+    public void componentHidden(ComponentEvent e) {
+        //keyboard.setVisible(false);
+    }
+    @Override
+    public void componentResized(ComponentEvent e) {
+    }
+    @Override
+    public void componentMoved(ComponentEvent e) {
+    }
 }

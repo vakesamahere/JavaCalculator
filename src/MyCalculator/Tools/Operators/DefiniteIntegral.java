@@ -39,6 +39,7 @@ public class DefiniteIntegral extends Operator{
         
         //****************************************
         fx=Calculator.replaceVar(fx, va);
+        System.out.println(fx);
 
         Double result=0.0;
         Double dx=Double.parseDouble(a);

@@ -13,7 +13,7 @@ public class Variable implements ActionListener{
     public JTextArea valueText;//
     public JButton modifyButton;//
     public JScrollPane scrollPane;//
-    public ExpressionCollector dialog;//
+    public ExpressionEditor dialog;//
     public String name;
     public String value="";
     public Variable(){
@@ -32,7 +32,7 @@ public class Variable implements ActionListener{
         modifyButton=new JButton("...");//
         valueText=new JTextArea();//
         scrollPane=new JScrollPane(valueText);//
-        dialog=new ExpressionCollector(this);//
+        dialog=new ExpressionEditor(this);//
 
         for(JComponent c:Arrays.asList(scrollPane,modifyButton)){
             selfPanel.add(c);

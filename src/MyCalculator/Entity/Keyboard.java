@@ -5,16 +5,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.ArrayList;
-
 public class Keyboard extends JDialog{
+    private static final double ratio = 0.3;
     private Key[] keys = new Key[30];
     private List<Character> hotKeys = new ArrayList<>();
     private JTextArea output;
     private ExpressionEditor parent;
     private int index=0;
-    public Keyboard(ExpressionEditor eed){
-        parent=eed;
-        output=parent.textArea;
+    public Keyboard(){
+        //parent=eed;
         setLayout(new GridLayout(0,5));
         iniKeys();
         this.addWindowFocusListener(new WindowAdapter() {
@@ -28,6 +27,16 @@ public class Keyboard extends JDialog{
             }
         
         });
+
+        //size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)(ratio*screenSize.getWidth());
+        int height = (int)(ratio*screenSize.getHeight());
+        this.setSize(width,height);
+    }
+    public void setParent(ExpressionEditor eed){
+        parent=eed;
+        output=parent.textArea;
     }
     public void iniKeys() {
         newKey("+", "+", '+', 1);
@@ -36,10 +45,10 @@ public class Keyboard extends JDialog{
         newKey("÷", "/", '/', 1);
         newKey("^", "^", '^', 1);
 
-        newKey("%", "%", '%', 1);
+        newKey("[]", "[]", '[', 1);
         newKey("()", "()", '(', 1);
         newKey("abs", "abs()", '|', 4);
-        newKey("exp", "exp()", 'E', 4);
+        newKey("exp", "exp()", 'X', 4);
         newKey("ln", "ln()", 'L', 3);
 
         newKey("π", "π", 'P', 1);
@@ -51,6 +60,7 @@ public class Keyboard extends JDialog{
         newKey("sin", "sin()", 'S', 4);
         newKey("cos", "cos()", 'C', 4);
         newKey("tan", "tan()", 'T', 4);
+        newKey("%", "%", '%', 1);
 
         newKey("arcsin", "arcsin()", '!', 7);
         newKey("arccos", "arccos()", '@', 7);
