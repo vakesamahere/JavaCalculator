@@ -11,8 +11,6 @@ public class Minus extends Operator {
     public Minus(){
     }
     public String solve(){
-        System.err.println(parameters[0]);
-        System.err.println(parameters[1]);
         if(parameters[0].indexOf(']')!=-1||parameters[1].indexOf('[')!=-1){
             return parameters[0]+String.format("M%sM", pattern)+parameters[1];
         }
@@ -23,6 +21,7 @@ public class Minus extends Operator {
         }catch(Exception e){
             num1=0.0;
             includePre=true;
+            //e.printStackTrace();
         }
         Double num2 = Double.valueOf(Calculator.cal(parameters[1]));
         Double result = num1-num2;

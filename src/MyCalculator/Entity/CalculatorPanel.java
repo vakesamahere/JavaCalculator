@@ -1,21 +1,28 @@
 package MyCalculator.Entity;
 
 import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.border.*;
 
 import MyCalculator.Lobby;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.ComponentEditor;
+import MyCalculator.Tools.HistoryRecorder;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class CalculatorPanel extends JPanel implements ActionListener,ComponentListener{
+    private static final Color buttonColor = new Color(233, 233, 233);
+
     public JTextField accuracyField;
     public JTextField diaNameField;
     public JTextField rightLimitField;
@@ -34,8 +41,6 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
     public IndependentVar varExp = new IndependentVar("Expression",true);
     public IndependentVar varRes = new IndependentVar("Result",true);
-    public Thread calThread;
-    public Thread diaThread;
     private boolean running = false;
 
     private List<Double> rootsX = new ArrayList<>();
@@ -51,6 +56,11 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
     private List<List<Double>[]> outputss;
     private List<String> expStrings;
+
+    private ExecutorService executorCal;
+    private ExecutorService executorDia;
+    private Future<String> futureCal;
+    private Future<String> futureDia;
 
     public CalculatorPanel(){//
         outputss= new ArrayList<>();
@@ -70,9 +80,13 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         varExp = new IndependentVar("Expression",true);
         varRes = new IndependentVar("Result",true);
         diagramDisplayer=new DiagramDisplayer();
-        
+        varExp.getValueArea().getDocument().addDocumentListener(new HistoryRecorder());
+
         solve.addActionListener(this);
         table.addActionListener(this);
+
+        solve.setBackground(buttonColor);
+        table.setBackground(buttonColor);
 
         setLayout(null);
         setBorder(BorderFactory.createLineBorder(Color.gray,1));
@@ -82,8 +96,11 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         refreshComponent();
     }
     private void refreshComponent() {
-        for(JComponent component:Arrays.asList(solve,table,expressionLabel,resultLabel,leftLimitField,accuracyLabel,varDiaNameLabel,fromLabel,toLabel)){
+        for(JComponent component:Arrays.asList(expressionLabel,resultLabel,leftLimitField,accuracyLabel,varDiaNameLabel,fromLabel,toLabel)){
             component.setFont(Lobby.signFont);
+        }
+        for(JComponent component:Arrays.asList(solve,table)){
+            component.setFont(Lobby.boldSignFont);
         }
         for(JComponent component:Arrays.asList(leftLimitField,rightLimitField,accuracyField,diaNameField)){
             component.setBorder(BorderFactory.createLineBorder(Color.gray,1));
@@ -108,90 +125,102 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         ComponentEditor.initializeComponentBody(varDiaNameLabel,this,0.805,0.82,0.05,0.12);
         ComponentEditor.initializeComponentBody(diaNameField,this,0.85,0.82,0.1,0.12);
     }
-    public void startCal(){
-        calThread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                running=true;
-                long stratTime = System.currentTimeMillis();
-                String result = Calculator.calString(varExp.getValueArea().getText());
-                result = Calculator.cal(result);
-                varRes.getValueArea().setText(result);
-                long endTime = System.currentTimeMillis();
-                long cost = endTime-stratTime;
-                Lobby.getLogDisplayer().addLog(String.format("Calculation Completed! Cost %s.%ss", cost/1000,cost%1000));
-                Lobby.getProgressBar().setProgress(100.0);
-                running=false;
+    public void calWork(){
+        running=true;
+        long stratTime = System.currentTimeMillis();
+        String result = Calculator.calString(varExp.getValueArea().getText());
+        result = Calculator.cal(result);
+        varRes.getValueArea().setText(result);
+        long endTime = System.currentTimeMillis();
+        long cost = endTime-stratTime;
+        Lobby.getLogDisplayer().addLog(String.format("Calculation Completed! Cost %s.%ss", cost/1000,cost%1000));
+        Lobby.getProgressBar().setProgress(100.0);
+        running=false;
+    }
+    public void diaWork(){
+        running=true;
+        long stratTime = System.currentTimeMillis();
+        String[] exps=varExp.getValueArea().getText().split(";");
+        Double start,end;
+        int n;
+        String 
+            varName = diaNameField.getText(),
+            left = leftLimitField.getText(),
+            right = rightLimitField.getText(),
+            accu = accuracyField.getText();
+        start = (left.length()==0)?-1.0:Double.parseDouble(left);
+        end = (right.length()==0)?1.0:Double.parseDouble(right);
+        n = (accu.length()==0)?1000:Integer.parseInt(accu);
+        //System.err.println(String.format("(%s) %s %s %s %s", expString,start,end,n,varName));
+        expStrings = new ArrayList<>();
+        outputss = new ArrayList<>();
+        //*****************************************************************************************
+        for(String expString:exps){
+            expStrings.add(expString);
+            //System.err.println(expString);
+            expString = Calculator.calString(expString);
+            List<Double>[] outputs = Calculator.listGen(expString,varName,start,end,n);
+            outputss.add(outputs);
+        }
+        diagramDisplayer.inputss = outputss;
+        //*****************************************************************************************
+        //*****************************************************************************************
+        String output="";
+        for(List<Double>[] outputs:outputss){//each expString and result
+            //System.err.println(outputs[1].toString());
+            Calculator.analysis(outputs[0], outputs[1], rootsX, maxsX, minsX, extsX, mostsX, rootsY, maxsY, minsY, extsY, mostsY);
+            output+="\n>>>>>********************************<<<<<\nNew Data Analysis\n>>>>>********************************<<<<<\n";
+            output+=String.format("*********Equation:\n%s=0\n", expStrings.get(outputss.indexOf(outputs)));
+            output+=String.format("*********Roots:\n%s\n", rootsX.toString().replace(",", "\n"));
+            output+="*********Extreme Points:\n";
+            int len = extsX.size();
+            for(int i=0;i<len;i++){
+                output+=String.format("(%s,%s)\n", extsX.get(i),extsY.get(i));
             }
-          });
-        calThread.start();
+            output+=String.format("\n*********Max Point:\n(%s,%s)\n", mostsX.get(0),mostsY.get(0));
+            output+=String.format("*********Min Point:\n(%s,%s)\n", mostsX.get(1),mostsY.get(1));
+            output+="\n\n\n\n\n";
+        }
+        varRes.getValueArea().setText(output);
+        //*****************************************************************************************
+        long endTime = System.currentTimeMillis();
+        long cost = endTime-stratTime;
+        Lobby.getLogDisplayer().addLog(String.format("Diagram Generated! Cost %s.%ss", cost/1000,cost%1000));
+        Lobby.getProgressBar().setProgress(100.0);
+        diagramDisplayer.setVisible(true);
+        running=false;
+    }
+    public void startCal(){
+        executorCal = Executors.newSingleThreadExecutor();
+        futureCal = null;
+        try{
+            CalCallable calTask = new CalCallable(this);
+            futureCal=executorCal.submit(calTask);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            executorCal.shutdown();
+        }
     }
     public void startTab(){
-        diaThread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                running=true;
-                long stratTime = System.currentTimeMillis();
-                String[] exps=varExp.getValueArea().getText().split(";");
-                Double start,end;
-                int n;
-                String 
-                    varName = diaNameField.getText(),
-                    left = leftLimitField.getText(),
-                    right = rightLimitField.getText(),
-                    accu = accuracyField.getText();
-                start = (left.length()==0)?-1.0:Double.parseDouble(left);
-                end = (right.length()==0)?1.0:Double.parseDouble(right);
-                n = (accu.length()==0)?1000:Integer.parseInt(accu);
-                //System.err.println(String.format("(%s) %s %s %s %s", expString,start,end,n,varName));
-                expStrings = new ArrayList<>();
-                outputss = new ArrayList<>();
-                //*****************************************************************************************
-                for(String expString:exps){
-                    expStrings.add(expString);
-                    //System.err.println(expString);
-                    expString = Calculator.calString(expString);
-                    List<Double>[] outputs = Calculator.listGen(expString,varName,start,end,n);
-                    outputss.add(outputs);
-                }
-                diagramDisplayer.inputss = outputss;
-                //*****************************************************************************************
-                //*****************************************************************************************
-                String output="";
-                for(List<Double>[] outputs:outputss){//each expString and result
-                    //System.err.println(outputs[1].toString());
-                    Calculator.analysis(outputs[0], outputs[1], rootsX, maxsX, minsX, extsX, mostsX, rootsY, maxsY, minsY, extsY, mostsY);
-                    output+="\n>>>>>********************************<<<<<\nNew Data Analysis\n>>>>>********************************<<<<<\n";
-                    output+=String.format("*********Equation:\n%s=0\n", expStrings.get(outputss.indexOf(outputs)));
-                    output+=String.format("*********Roots:\n%s\n", rootsX.toString().replace(",", "\n"));
-                    output+="*********Extreme Points:\n";
-                    int len = extsX.size();
-                    for(int i=0;i<len;i++){
-                        output+=String.format("(%s,%s)\n", extsX.get(i),extsY.get(i));
-                    }
-                    output+=String.format("\n*********Max Point:\n(%s,%s)\n", mostsX.get(0),mostsY.get(0));
-                    output+=String.format("*********Min Point:\n(%s,%s)\n", mostsX.get(1),mostsY.get(1));
-                    output+="\n\n\n\n\n";
-                }
-                varRes.getValueArea().setText(output);
-                //*****************************************************************************************
-                long endTime = System.currentTimeMillis();
-                long cost = endTime-stratTime;
-                Lobby.getLogDisplayer().addLog(String.format("Diagram Generated! Cost %s.%ss", cost/1000,cost%1000));
-                Lobby.getProgressBar().setProgress(100.0);
-                diagramDisplayer.setVisible(true);
-                running=false;
-            }
-          });
-        diaThread.start();
+        executorDia = Executors.newSingleThreadExecutor();
+        futureDia = null;
+        try{
+            DiaCallable diaTask = new DiaCallable(this);
+            futureCal=executorDia.submit(diaTask);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            executorDia.shutdown();
+        }
     }
     public void stopAll() {
         try{
-            calThread.stop();
-        }catch(Exception e){}
-        try{
-            diaThread.stop();
-        }catch(Exception e){}
+            futureCal.cancel(true);
+            futureDia.cancel(true);
+        }catch(Exception e){
+            //Lobby.getLogDisplayer().addLog("Interrupt");
+        }
         running=false;
         Lobby.getProgressBar().setProgress(0.0);
     }
@@ -222,5 +251,35 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     }
     @Override
     public void componentHidden(ComponentEvent e) {
+    }
+}
+class CalCallable implements Callable<String> {
+    private CalculatorPanel cp;
+    public CalCallable(CalculatorPanel cp){
+        this.cp=cp;
+    }
+    @Override
+    public String call() throws Exception {
+        if(Thread.interrupted()){
+            return "计算取消";
+        }else{
+            cp.calWork();
+            return "计算成功";
+        }    
+    }
+}
+class DiaCallable implements Callable<String> {
+    private CalculatorPanel cp;
+    public DiaCallable(CalculatorPanel cp){
+        this.cp=cp;
+    }
+    @Override
+    public String call() throws Exception {
+        if(Thread.interrupted()){
+            return "计算取消";
+        }else{
+            cp.diaWork();
+            return "计算成功";
+        }    
     }
 }

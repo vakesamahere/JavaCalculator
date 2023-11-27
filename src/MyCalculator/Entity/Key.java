@@ -1,17 +1,34 @@
 package MyCalculator.Entity;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.awt.*;
 
-import javax.swing.JButton;
+import javax.swing.*;
 
 public class Key extends JButton{
     public final String value;
     public final char hotkey;
     private Keyboard keyboard;
     private int offset;
-    public Key(String name,String va,char key,int cOffset,Keyboard parent){
-        super((key==' ')?name:String.format("%s [%s]", name,key));
+    private JLabel nameLabel;
+    private JLabel keyLabel;
+    public Key(String name,String va,char key,int cOffset,Keyboard parent,JPanel container,Color backColor){
+        container.add(this);
+        setMargin(new Insets(0, 0, 0, 0));
+        setBackground(backColor);
+        setLayout(new GridLayout(2,1));
+        nameLabel=new JLabel(name);
+        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        nameLabel.setFont(getParent().getFont());
+        add(nameLabel);
+        if(key==' '){
+            keyLabel=new JLabel();
+        }else{
+            keyLabel=new JLabel(String.format("< %s >", key));
+        }
+        keyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        keyLabel.setFont(getParent().getFont());
+        add(keyLabel);
         value = va;
         hotkey = key;
         keyboard = parent;

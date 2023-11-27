@@ -18,6 +18,8 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     private CaretListener caretListener;
     private int dot=0;
     private boolean shifting=false;
+    private boolean hotKeyLock=false;
+    private boolean ctrlPressed=false;
     JTextArea textArea;
     JScrollPane scrollPane;
     Variable target;
@@ -153,14 +155,25 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     }
     @Override
     public void keyTyped(KeyEvent e) {
-        boolean match =keyboard.keyTyped(e.getKeyChar());
-        if(match)e.consume();
+        if(hotKeyLock||ctrlPressed||e.getKeyChar()=='('||e.getKeyChar()=='['){
+            boolean match = keyboard.keyTyped(e.getKeyChar());
+            if(match)e.consume();
+        }
+        ctrlPressed=false;
     }
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode()==KeyEvent.VK_SHIFT){
             shifting=true;
         }
+        if(e.getKeyCode()==KeyEvent.VK_CONTROL){
+            ctrlPressed=!ctrlPressed;
+        }
+        if(e.isControlDown()&&e.getKeyCode()==192){//`~
+            hotKeyLock=!hotKeyLock;
+            ctrlPressed=false;
+        }
+
         switch (e.getKeyChar()) {
             case KeyEvent.VK_TAB:{
                 if(shifting){

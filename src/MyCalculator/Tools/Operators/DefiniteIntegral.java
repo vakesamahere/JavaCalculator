@@ -29,6 +29,7 @@ public class DefiniteIntegral extends Operator{
             n=Integer.valueOf(Calculator.cal(parameters[4]));
         }catch(Exception e){
             n=1000;
+            //e.printStackTrace();
         }
 
         unit=Math.abs(Double.parseDouble(b)-Double.parseDouble(a))/n;
@@ -39,7 +40,6 @@ public class DefiniteIntegral extends Operator{
         
         //****************************************
         fx=Calculator.replaceVar(fx, va);
-        System.out.println(fx);
 
         Double result=0.0;
         Double dx=Double.parseDouble(a);

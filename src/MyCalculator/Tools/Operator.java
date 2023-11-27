@@ -212,6 +212,7 @@ public abstract class Operator {
             try{
                 expression.o.parameters[posCount+1]=expString.substring(posComma[posCount]+1,posComma[posCount+1]);
             }catch(Exception e){
+                //e.printStackTrace();
                 break;
             }
         }
@@ -339,11 +340,12 @@ public abstract class Operator {
                     
                     regex+=String.format("|%s(%s)%s",nonOpRegex, piece,nonOpRegex);
                 }catch(Exception e){
+                    e.printStackTrace();
                     //System.out.println("sth wrong when generating regex arrays");
                 }
             }
             regex=regex.substring(1);
-            System.out.println(regex);
+            //System.out.println(regex);
             Pattern pat = Pattern.compile(regex);
             patterns.add(pat);
         }

@@ -40,9 +40,10 @@ public class Calculator {
         expString=expString.replace("\n"," ");
         //Minus,Power,',','()'
         expString=expString.replaceAll("([\\(\\[,][\\s]?)-", "$1"+"0-");
-        System.err.println(expString);
         expString=expString.replace("-", Minus.pattern);
         expString=expString.replace("^", Power.pattern);
+        expString=expString.replace("arr∏", ArrayMultiplicative.pattern);
+        expString=expString.replace("arr∑", ArraySum.pattern);
         expString=expString.replace("∫", DefiniteIntegral.pattern);
         expString=expString.replace("∑", Sum.pattern);
         expString=expString.replace("∏", Multiplicative.pattern);
@@ -69,7 +70,6 @@ public class Calculator {
         Double unit = (end-start)/n;
         Double x=start;
         expString=replaceVar(String.format(" %s ", expString),va);
-        System.err.println(expString);
 
         Double unitIcre = 100.0/n;
         Double progress=0.0;
@@ -132,7 +132,7 @@ public class Calculator {
                 Method method = op.getDeclaredMethod("loadSelf", String.class,Expression.class,int.class);//getMethod
                 method.invoke(null,expString,expression,pos);//run
             }catch(Exception e){
-                System.out.println(e);
+                e.printStackTrace();
                 continue;
             }
             return true;

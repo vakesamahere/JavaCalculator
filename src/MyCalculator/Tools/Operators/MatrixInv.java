@@ -32,7 +32,6 @@ public class MatrixInv extends Operator {
                 if(k==i)continue;
                 Operator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
             }
-            System.err.println(String.format("%s", matrix[i][i]));
         }
         Double[][] resultMatrix = new Double[n][n];
         for(int i=0;i<n;i++)System.arraycopy(matrix[i], n, resultMatrix[i], 0, n);

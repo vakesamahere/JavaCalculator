@@ -49,10 +49,9 @@ public class LogDisplayer extends IndependentVar {
         if(Lobby.getCalculatorPanel().isRunning()==false)highFreq=0;
         System.err.println("Checking Length..");
         int length = valueText.getText().length();
-        System.err.println(length);
         if(length>maxLength){
             valueText.setText(valueText.getText().substring(length/2));
         }
-        System.err.println(valueText.getText().length());
+        System.err.println(String.format("Length:%s>>>>%s", length,valueText.getText().length()));
     }
 }

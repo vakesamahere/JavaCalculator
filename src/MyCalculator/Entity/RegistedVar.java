@@ -26,7 +26,7 @@ public class RegistedVar extends Variable{
         deleteButton = new JButton("del");
         nameText = new JTextField();
         up = new JButton("∧");
-        down = new JButton("v");
+        down = new JButton("∨");
         nameText.setFont(Lobby.smallFormatFont);
 
         nameText.addActionListener(this);
@@ -34,13 +34,18 @@ public class RegistedVar extends Variable{
         up.addActionListener(this);
         down.addActionListener(this);
         owner.getVarPanel().add(selfPanel);
+
+        for(JButton bu:Arrays.asList(modifyButton,deleteButton,up,down)){
+            bu.setBackground(buttonColor);
+            bu.setBorder(BorderFactory.createLineBorder(Color.gray));
+        }
+
         refreshComponent();
     }
     public void refreshComponent(){
         for(JComponent c:Arrays.asList(nameText,deleteButton,up,down)){
             selfPanel.add(c);
             c.setFont(Lobby.signFont);
-            c.setBorder(BorderFactory.createLineBorder(Color.lightGray,1));
         }
         valueText.setFont(Lobby.formatFont);
 

@@ -9,6 +9,7 @@ import javax.swing.*;
 import MyCalculator.Lobby;
 
 public class Variable implements ActionListener{
+    protected static final Color buttonColor = new Color(255, 255, 255);
     public JPanel selfPanel;//
     public JTextArea valueText;//
     public JButton modifyButton;//
@@ -34,10 +35,12 @@ public class Variable implements ActionListener{
         scrollPane=new JScrollPane(valueText);//
         dialog=new ExpressionEditor(this);//
 
+        modifyButton.setBackground(buttonColor);
+        scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray,1));
+
         for(JComponent c:Arrays.asList(scrollPane,modifyButton)){
             selfPanel.add(c);
             c.setFont(Lobby.signFont);
-            c.setBorder(BorderFactory.createLineBorder(Color.lightGray,1));
         }
         valueText.setFont(Lobby.smallFormatFont);
         valueText.setLineWrap(true);

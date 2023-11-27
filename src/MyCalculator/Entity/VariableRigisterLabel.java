@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VariableRigisterLabel extends JPanel implements ActionListener,ComponentListener{
+    private static final Color buttonColor = new Color(253, 253, 253);
     private JLabel nameSign = new JLabel("Var");
     private JLabel valueSign = new JLabel("Value");
     private JButton nameDisplayer = new JButton();
@@ -32,6 +33,8 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
         setBorder(BorderFactory.createLineBorder(Color.gray));
         register.addActionListener(this);
         nameDisplayer.addActionListener(this);
+        register.setBackground(buttonColor);
+        nameDisplayer.setBackground(buttonColor);
 
         varScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         varScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
