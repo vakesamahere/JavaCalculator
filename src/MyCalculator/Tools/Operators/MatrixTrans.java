@@ -13,10 +13,6 @@ public class MatrixTrans extends Operator {
         //System.err.println("Solve:"+parameters[0]);
         String[] array = stringToArray(Calculator.cal(parameters[0]));
         String[][] matrix = arrayToMatrix(array);
-        if(matrix.length==0||matrix[0].length==0){
-            matrix = new String[array.length][1];
-            for(int i=0;i<array.length;i++)matrix[i][0]=array[i];
-        }
         int m = matrix.length,n=matrix[0].length;
         String[][] result = new String[n][m];
         for(int i=0;i<m;i++)for(int j=0;j<n;j++)result[j][i]=matrix[i][j];

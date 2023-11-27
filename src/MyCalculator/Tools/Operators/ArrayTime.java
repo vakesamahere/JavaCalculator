@@ -19,15 +19,7 @@ public class ArrayTime extends Operator {
         String[] array1 = Operator.stringToArray(parameters[0]);
         String[] array2 = Operator.stringToArray(parameters[1]);
         String[][] matrix1= Operator.arrayToMatrix(array1);
-        if(matrix1.length==0||matrix1[0].length==0){
-            matrix1 = new String[array1.length][1];
-            for(int i=0;i<array1.length;i++)matrix1[i][0]=array1[i];
-        }
-        String[][] matrix2= Operator.arrayToMatrix(array2);    
-        if(matrix2.length==0||matrix2[0].length==0){
-            matrix2 = new String[array2.length][1];
-            for(int i=0;i<array2.length;i++)matrix2[i][0]=array2[i];
-        }    
+        String[][] matrix2= Operator.arrayToMatrix(array2);
         //
         int m1=matrix1.length;
         int len=Math.min(matrix1[0].length,matrix2.length);

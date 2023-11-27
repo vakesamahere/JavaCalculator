@@ -1,5 +1,6 @@
 package MyCalculator.Tools;
 import java.util.Arrays;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
@@ -14,8 +15,8 @@ public abstract class Operator {
             "DefiniteIntegral"
             ,"Sum"
             ,"Multiplicative"
-            //,"ArraySum"//求和
-            //,"ArrayMul"//求积
+            ,"ArraySum"//求和
+            ,"ArrayMultiplicative"//求积
         ),
         Arrays.asList(
             "Bracket"
@@ -31,9 +32,8 @@ public abstract class Operator {
             ,"Absolute"
             ,"MatrixJointRow"//行拼接
             ,"MatrixJointCol"//列拼接
-            //,"MatrixAdjoint"//生成伴随矩阵
-            //,"MatrixDet"//求行列式
-            //,"MatrixInv"//逆矩阵
+            ,"MatrixDet"//求行列式
+            ,"MatrixInv"//逆矩阵
             ,"MatrixTrans"//转置
             ,"Mean"//期望
             ,"Variance"//方差
@@ -61,7 +61,7 @@ public abstract class Operator {
     );
     public static List<List<String>> patternStrings=new ArrayList<>();
     public static List<Pattern> patterns=new ArrayList<>();
-    public java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+    public static NumberFormat nf = NumberFormat.getInstance();
     public String[] parameters = new String[5];//record parameters need to be operated
     public static String pattern;
     public static String[] punish;
@@ -377,12 +377,16 @@ public abstract class Operator {
     public static String[][] arrayToMatrix(String[] array){
         int m=array.length;
         List<String[]> tempStringss= new ArrayList<>();
-        for(int i=0;i<m;i++){
-            tempStringss.add(stringToArray(array[i]));
+        for(int i=0;i<m;i++)tempStringss.add(stringToArray(array[i]));
+        if(tempStringss.size()==0||tempStringss.get(0).length==0){
+            String[][] output = new String[array.length][1];
+            for(int i=0;i<array.length;i++)output[i][0]=array[i];
+            return output;
         }
         String[][] output = new String[m][tempStringss.size()];
         int index=0;
         for(String[] tempStrings:tempStringss)output[index++]=tempStrings;
+        
         return output;
     }
     public static String matrixToString(String[][] matrix) {
@@ -392,5 +396,37 @@ public abstract class Operator {
         }
         String output = String.format("[%s]", String.join(" , ", tempStrings));
         return output;
+    }
+    public static String matrixToString(Double[][] matrix){
+        List<String> tempStrings = new ArrayList<>();
+        for(Double[] array:matrix){
+            String[] arrayStr = new String[array.length];
+            for(int i=0;i<array.length;i++)arrayStr[i]=nf.format(array[i]);
+            tempStrings.add(String.format("[%s]", String.join(" , ", arrayStr)));
+        }
+        String output = String.format("[%s]", String.join(" , ", tempStrings));
+        return output;
+    }
+    public static Double[][] matrixToDoubles(String[][] matrix){
+        int n=matrix.length,m=matrix[0].length;
+        Double[][] md = new Double[n][m];
+        for(int i=0;i<n;i++)for(int j=0;j<m;j++)md[i][j] = Double.valueOf(Calculator.cal(matrix[i][j]));
+        return md;
+    }
+    public static void matrixRowAdd(Double[][] matrix,int rowSource,int rowTarget,double ratio){
+        int len=matrix[rowTarget].length;
+        Double[] arr = matrix[rowSource];
+        for(int i=0;i<len;i++){
+            matrix[rowTarget][i]+=arr[i]*ratio;
+        }
+    }
+    public static void matrixRowMul(Double[][] matrix,int row,double ratio){
+        int len = matrix[row].length;
+        for(int i=0;i<len;i++)matrix[row][i]*=ratio;
+    }
+    public static void matrixRowSwap(Double[][] matrix,int rowSource,int rowTarget){
+        Double[] temp = matrix[rowSource];
+        matrix[rowSource] = matrix[rowTarget];
+        matrix[rowTarget] = temp;
     }
 }

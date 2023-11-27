@@ -1,5 +1,4 @@
 package MyCalculator.Tools.Operators;
-import MyCalculator.Lobby;
 import MyCalculator.Entity.Expression;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;

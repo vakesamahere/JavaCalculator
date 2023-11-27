@@ -39,6 +39,8 @@ public class Calculator {
         expString=expString.replace("\t"," ");
         expString=expString.replace("\n"," ");
         //Minus,Power,',','()'
+        expString=expString.replaceAll("([\\(\\[,][\\s]?)-", "$1"+"0-");
+        System.err.println(expString);
         expString=expString.replace("-", Minus.pattern);
         expString=expString.replace("^", Power.pattern);
         expString=expString.replace("∫", DefiniteIntegral.pattern);

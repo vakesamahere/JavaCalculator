@@ -22,6 +22,7 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
     private JPanel variablesPanel = new JPanel(null);
     private JScrollPane varScrollPane = new JScrollPane();
     private List<RegistedVar> varList = new ArrayList<>();
+    private List<RegistedVar> perList = new ArrayList<>();
 
     public VariableRigisterLabel(String name,JComponent father,double posX,double posY,double sizeX,double sizeY){
         this.setLayout(null);
@@ -44,6 +45,9 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
     }
     public List<RegistedVar> getVarList(){
         return varList;
+    }
+    public List<RegistedVar> getPerList(){
+        return perList;
     }
     public int getVarCount(){
         return variablesPanel.getComponentCount();
@@ -94,6 +98,11 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
         ComponentEditor.refreshBar(varScrollPane.getVerticalScrollBar());
 
         varList = new ArrayList<>();
+        for(RegistedVar va:perList){
+            variablesPanel.add(va.getSelfPanel());
+            varList.add(va);
+        }
+        revalidate();
         repaint();
     }
     public String replaceVars(String expString) {

@@ -11,10 +11,10 @@ import MyCalculator.Tools.ComponentEditor;
 
 public class RegistedVar extends Variable{
     private static final double heightRatio = 0.08;
-    private JButton deleteButton;
+    protected JButton deleteButton;
     private JButton up;
     private JButton down;
-    private JTextField nameText;
+    protected JTextField nameText;
     private VariableRigisterLabel owner;
 
     public RegistedVar(VariableRigisterLabel father){

@@ -19,10 +19,6 @@ public class MatrixJointRow extends Operator {
         int len=0;
         String[] array0 = stringToArray(Calculator.cal(parameters[0]));
         String[][] matrix0 = arrayToMatrix(array0);
-        if(matrix0.length==0||matrix0[0].length==0){
-            matrix0 = new String[array0.length][1];
-            for(int i=0;i<array0.length;i++)matrix0[i][0]=array0[i];
-        }
         len+=matrix0[0].length;
         List<String> temp[] = new List[matrix0.length];
         for(int i=0;i<matrix0.length;i++){
@@ -33,10 +29,6 @@ public class MatrixJointRow extends Operator {
             if(parameters[i]==null)break;
             String[] array = stringToArray(Calculator.cal(parameters[i]));
             String[][] matrix = arrayToMatrix(array);
-            if(matrix.length==0||matrix[0].length==0){
-                matrix = new String[array.length][1];
-                for(int k=0;k<array.length;k++)matrix[k][0]=array[k];
-            }
             len+=matrix[0].length;
             for(int k=0;k<matrix.length;k++)for(String item:matrix[k])temp[k].add(item);
         }

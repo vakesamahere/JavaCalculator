@@ -1,6 +1,5 @@
 package MyCalculator.Tools.Operators;
 import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;
 
 public class ArrayPower extends Operator {

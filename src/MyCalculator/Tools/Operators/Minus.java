@@ -16,12 +16,18 @@ public class Minus extends Operator {
         if(parameters[0].indexOf(']')!=-1||parameters[1].indexOf('[')!=-1){
             return parameters[0]+String.format("M%sM", pattern)+parameters[1];
         }
-        Double num1=0.0;
-        System.err.println(parameters[0]);
-        if(parameters[0].replace(" ", "").length()!=0)num1 = Double.valueOf(Calculator.cal(parameters[0]));
+        Double num1;
+        boolean includePre=false;
+        try{
+            num1 = Double.valueOf(Calculator.cal(parameters[0]));
+        }catch(Exception e){
+            num1=0.0;
+            includePre=true;
+        }
         Double num2 = Double.valueOf(Calculator.cal(parameters[1]));
         Double result = num1-num2;
         String output = nf.format(result);
+        if(includePre)output=parameters[0]+output;
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s-%s=%s", num1,num2,output));
         return output;
     }

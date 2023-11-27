@@ -5,6 +5,7 @@ import javax.swing.*;
 import MyCalculator.Entity.CalculatorPanel;
 import MyCalculator.Entity.ExpressionEditor;
 import MyCalculator.Entity.Keyboard;
+import MyCalculator.Entity.LinkVar;
 import MyCalculator.Entity.LogDisplayer;
 import MyCalculator.Entity.ProgressBar;
 import MyCalculator.Entity.VariableRigisterLabel;
@@ -60,6 +61,9 @@ public class Lobby extends JFrame implements ComponentListener{
         ComponentEditor.initializeComponentBody(calculatorPanel,formPanel,0,0,1,0.35);
         //constVariables,tempVariables
         constVariablesManager= new VariableRigisterLabel("constVars", formPanel, 0,0.4,1,0.65);
+        //
+        LinkVar resRegVar = new LinkVar(constVariablesManager, calculatorPanel.varRes.valueText, "Result");
+        resRegVar.setName("RES");
         //
         refreshComponent();
     }

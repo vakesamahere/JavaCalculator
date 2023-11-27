@@ -21,10 +21,6 @@ public class MatrixJointCol extends Operator {
             if(parameters[i]==null)break;
             String[] array = stringToArray(Calculator.cal(parameters[i]));
             String[][] matrix = arrayToMatrix(array);
-            if(matrix.length==0||matrix[0].length==0){
-                matrix = new String[array.length][1];
-                for(int k=0;k<array.length;k++)matrix[k][0]=array[k];
-            }
             for(String[] arr:matrix)temp.add(arr);
         }
         String[][] result = new String[temp.size()][];
