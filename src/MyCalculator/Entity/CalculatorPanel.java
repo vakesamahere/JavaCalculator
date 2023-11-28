@@ -1,13 +1,10 @@
 package MyCalculator.Entity;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.border.*;
 
 import MyCalculator.Lobby;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.ComponentEditor;
-import MyCalculator.Tools.HistoryRecorder;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -80,7 +77,6 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         varExp = new IndependentVar("Expression",true);
         varRes = new IndependentVar("Result",true);
         diagramDisplayer=new DiagramDisplayer();
-        varExp.getValueArea().getDocument().addDocumentListener(new HistoryRecorder());
 
         solve.addActionListener(this);
         table.addActionListener(this);

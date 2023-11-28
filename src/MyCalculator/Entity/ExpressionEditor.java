@@ -1,13 +1,17 @@
 package MyCalculator.Entity;
 
 import javax.swing.*;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
+import java.awt.event.*;
+
 import MyCalculator.Lobby;
+import MyCalculator.Tools.HistoryRecorder;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -20,6 +24,8 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     private boolean shifting=false;
     private boolean hotKeyLock=false;
     private boolean ctrlPressed=false;
+    private HistoryRecorder hr;
+
     JTextArea textArea;
     JScrollPane scrollPane;
     Variable target;
@@ -57,6 +63,8 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         };
         textArea.addCaretListener(caretListener);
         textArea.addKeyListener(this);
+        
+        hr=new HistoryRecorder(textArea,va.getValueArea());
     }
     public void refreshFont() {
         double size=50*Math.min(getHeight(),getWidth())/540;
