@@ -76,6 +76,8 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         varRes = new IndependentVar("Result",true);
         diagramDisplayer=new DiagramDisplayer();
 
+        varRes.getValueArea().setText("0");
+
         solve.addActionListener(this);
         table.addActionListener(this);
 
@@ -149,6 +151,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         start = (left.length()==0)?-1.0:Double.parseDouble(left);
         end = (right.length()==0)?1.0:Double.parseDouble(right);
         n = (accu.length()==0)?1000:Integer.parseInt(accu);
+        if(varName.length()==0)varName="x";
         //System.err.println(String.format("(%s) %s %s %s %s", expString,start,end,n,varName));
         expStrings = new ArrayList<>();
         outputss = new ArrayList<>();
