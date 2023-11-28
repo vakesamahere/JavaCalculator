@@ -16,7 +16,7 @@ public class Variance extends Operator {
         Double sum=0.0;
         Double mean;
         Mean m = new Mean();
-        m.parameters[0]=input;
+        m.setPa(0, input);
         mean=Double.parseDouble(m.solve());
         for(String num:array){
             sum+=Math.pow((Double.parseDouble(Calculator.cal(num))-mean),2);

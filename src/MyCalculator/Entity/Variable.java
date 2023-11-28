@@ -3,20 +3,19 @@ package MyCalculator.Entity;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
-
 import javax.swing.*;
 
 import MyCalculator.Lobby;
 
 public class Variable implements ActionListener{
     protected static final Color buttonColor = new Color(255, 255, 255);
-    public JPanel selfPanel;//
-    public JTextArea valueText;//
-    public JButton modifyButton;//
-    public JScrollPane scrollPane;//
-    public ExpressionEditor dialog;//
-    public String name;
-    public String value="";
+    protected JPanel selfPanel;//
+    protected JTextArea valueText;//
+    protected JButton modifyButton;//
+    protected JScrollPane scrollPane;//
+    protected ExpressionEditor dialog;//
+    protected String name;
+    protected String value="";
     public Variable(){
         initialize();
     }

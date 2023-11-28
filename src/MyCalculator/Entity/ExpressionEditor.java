@@ -1,18 +1,16 @@
 package MyCalculator.Entity;
 
+import MyCalculator.Lobby;
+import MyCalculator.Tools.HistoryRecorder;
+
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
-
-import java.awt.event.*;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.HistoryRecorder;
-
 import java.awt.*;
+import java.awt.event.*;
 
 public class ExpressionEditor extends JDialog implements DocumentListener,FocusListener,KeyListener,ComponentListener  {
     private static final double formSizeRatio = 0.4;
@@ -23,13 +21,12 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     private boolean hotKeyLock=false;
     private boolean ctrlPressed=false;
     private HistoryRecorder hr;
-    public boolean softKeyboardInput =false;//HistoryRecorder调用 用于判断判断软键盘输入
+    private boolean softKeyboardInput =false;//HistoryRecorder调用 用于判断判断软键盘输入
 
-    JTextArea textArea;
-    JScrollPane scrollPane;
-    Variable target;
-    Boolean passive;
-    Font font;
+    private JTextArea textArea;
+    private JScrollPane scrollPane;
+    private Variable target;
+    private Font font;
     public ExpressionEditor(Variable va){
         target = va;
         calSrceenSize(formSizeRatio);
@@ -87,6 +84,15 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     }
     public int getDot(){
         return dot;
+    }
+    public HistoryRecorder getHr(){
+        return hr;
+    }
+    public void setSoftKeyInput(boolean value){
+        softKeyboardInput=value;
+    }
+    public boolean getSoftKeyInput(){
+        return softKeyboardInput;
     }
     public void rightTab() {
         String str=classfication(textArea.getText());

@@ -12,7 +12,7 @@ public class Time extends Operator {
     }
     public String solve(){
         if(parameters[0].indexOf(']')!=-1||parameters[1].indexOf('[')!=-1){
-            return parameters[0]+String.format("M%sM", pattern)+parameters[1];
+            return parameters[0]+String.format("%s%s%s",pattrnFix, pattern, pattrnFix)+parameters[1];
         }
         Double num1 = Double.valueOf(Calculator.cal(parameters[0]));
         Double num2 = Double.valueOf(Calculator.cal(parameters[1]));

@@ -1,22 +1,15 @@
 package MyCalculator;
 //主窗口
-import javax.swing.*;
-
-import MyCalculator.Entity.CalculatorPanel;
-import MyCalculator.Entity.ExpressionEditor;
-import MyCalculator.Entity.Keyboard;
-import MyCalculator.Entity.LinkVar;
-import MyCalculator.Entity.LogDisplayer;
-import MyCalculator.Entity.ProgressBar;
-import MyCalculator.Entity.VariableRigisterLabel;
+import MyCalculator.Entity.*;
 import MyCalculator.Tools.ComponentEditor;
 import MyCalculator.Tools.Operator;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
-public class Lobby extends JFrame implements ComponentListener{
+public class Lobby extends JFrame{
     //settings
     public static final double formSizeRatio = 0.75;
     private static int formatFontSize;
@@ -41,17 +34,21 @@ public class Lobby extends JFrame implements ComponentListener{
         super(name);
         initialize();
         initializeComponent();
-        //this.setVisible(true);
-        this.addComponentListener(this);
+        addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentResized(ComponentEvent e) {
+                refreshComponent();
+            }
+        });
     }
-    public void initialize(){
+    private void initialize(){
         this.calSrceenSize(formSizeRatio);
         loadFont();
         //this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
     }
-    public void initializeComponent(){
+    private void initializeComponent(){
         //formPanel
         formPanel.setLayout(null);
         formPanel.setVisible(true);
@@ -62,12 +59,12 @@ public class Lobby extends JFrame implements ComponentListener{
         //constVariables,tempVariables
         constVariablesManager= new VariableRigisterLabel("constVars", formPanel, 0,0.4,1,0.65);
         //
-        LinkVar resRegVar = new LinkVar(constVariablesManager, calculatorPanel.varRes.valueText, "Result");
+        LinkVar resRegVar = new LinkVar(constVariablesManager, calculatorPanel.getVarRes().getValueArea(), "Result");
         resRegVar.setName("RES");
         //
         refreshComponent();
     }
-    public void refreshComponent(){
+    private void refreshComponent(){
         loadFont();
         ComponentEditor.initializeComponentBody(progressBar, formPanel, 0,0.34,1,0.05);
         ComponentEditor.initializeComponentBody(calculatorPanel,formPanel,0,0,1,0.35);
@@ -79,7 +76,7 @@ public class Lobby extends JFrame implements ComponentListener{
         compStickUp(constVariablesManager,progressBar,0);
         compStickUp(logDisplayer.getPanel(), progressBar,30);
     }
-    public void compStickUp(JComponent self,JComponent target,int delta){
+    private void compStickUp(JComponent self,JComponent target,int delta){
         self.setBounds(new Rectangle(
             self.getLocation().x,
             target.getLocation().y+target.getSize().height-1,
@@ -87,7 +84,7 @@ public class Lobby extends JFrame implements ComponentListener{
             this.getSize().height-(target.getLocation().y+target.getSize().height-1+delta)
         ));
     }
-    public void loadFont(){
+    private void loadFont(){
         formatFontSize = calFontSize(20);
         smallFormatFontSize = calFontSize(10);
         signFontSize = calFontSize(15);
@@ -97,11 +94,15 @@ public class Lobby extends JFrame implements ComponentListener{
         signFont = new Font("Microsoft Yahei", Font.PLAIN, signFontSize);
         smallFormatFont = new Font("Microsoft Yahei", Font.PLAIN, smallFormatFontSize);
     }
-    public void calSrceenSize(double ratio){
+    private void calSrceenSize(double ratio){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)(ratio*screenSize.getWidth());
         int height = (int)(ratio*screenSize.getHeight());
         this.setSize(width,height);
+    }
+    private int calFontSize(int size){
+        double realSize=size*Math.min(this.getHeight(),this.getWidth())/540;
+        return (int)realSize;
     }
     public static VariableRigisterLabel getConstVarMgr(){
         return constVariablesManager;
@@ -109,40 +110,15 @@ public class Lobby extends JFrame implements ComponentListener{
     public static CalculatorPanel getCalculatorPanel(){
         return calculatorPanel;
     }
-    public int calFontSize(int size){
-        double realSize=size*Math.min(this.getHeight(),this.getWidth())/540;
-        return (int)realSize;
-    }
     public static ProgressBar getProgressBar(){
         return progressBar;
     }
     public static LogDisplayer getLogDisplayer(){
         return logDisplayer;
     }
-    public static Keyboard getKeyBoard(){
-        return keyboard;
-    }
     public static void useKeyBoard(ExpressionEditor eed){
         eed.setKeyboard(keyboard);
         keyboard.setParent(eed);
-    }
-    @Override
-    public void componentResized(ComponentEvent e) {
-        if(e.getComponent()==this){
-            //setVisible(false);
-            refreshComponent();
-            //setVisible(true);
-        }
-    }
-    @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-
-    }
-    @Override
-    public void componentHidden(ComponentEvent e) {
     }
     public static void main(String[] args){
         Operator.generateArrays();

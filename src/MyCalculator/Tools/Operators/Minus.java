@@ -4,7 +4,7 @@ import MyCalculator.Entity.Expression;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;
 public class Minus extends Operator {
-    public final static String pattern = "_";
+    public final static String pattern = "@Minus@";
     public final static boolean bracketlike=false;
     public final static boolean left = true;
     public final static boolean right = true;
@@ -12,7 +12,7 @@ public class Minus extends Operator {
     }
     public String solve(){
         if(parameters[0].indexOf(']')!=-1||parameters[1].indexOf('[')!=-1){
-            return parameters[0]+String.format("M%sM", pattern)+parameters[1];
+            return parameters[0]+String.format("%s%s%s",pattrnFix, pattern, pattrnFix)+parameters[1];
         }
         Double num1;
         boolean includePre=false;

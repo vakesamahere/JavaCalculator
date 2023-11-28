@@ -4,7 +4,7 @@ import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;
 
 public class ArrayTime extends Operator {
-    public final static String pattern = "M*M";
+    public final static String pattern = pattrnFix+Time.pattern+pattrnFix;
     public final static boolean bracketlike=false;
     public final static boolean left = true;
     public final static boolean right = true;

@@ -18,9 +18,9 @@ public class Covariance extends Operator {
         String[] arrayY = Operator.stringToArray(inputY);
         Double meanX,meanY,sum=0.0;
         Mean m = new Mean();
-        m.parameters[0]=inputX;
+        m.setPa(0, inputX);
         meanX=Double.parseDouble(m.solve());
-        m.parameters[0]=inputY;
+        m.setPa(0, inputY);
         meanY=Double.parseDouble(m.solve());
         for(int i=0;i<arrayX.length;i++){
             sum+=(Double.parseDouble(Calculator.cal(arrayX[i]))-meanX)*(Double.parseDouble(Calculator.cal(arrayY[i]))-meanY);

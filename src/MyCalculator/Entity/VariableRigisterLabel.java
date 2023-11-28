@@ -1,15 +1,16 @@
 package MyCalculator.Entity;
-import javax.swing.*;
 
 import MyCalculator.Lobby;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.ComponentEditor;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ActionEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

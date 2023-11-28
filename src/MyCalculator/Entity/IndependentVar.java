@@ -1,12 +1,12 @@
 package MyCalculator.Entity;
 
-import java.awt.event.*;
+import MyCalculator.Lobby;
+import MyCalculator.Tools.ComponentEditor;
 
+import java.awt.event.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import MyCalculator.Lobby;
-import MyCalculator.Tools.ComponentEditor;
 
 public class IndependentVar extends Variable implements ComponentListener,CaretListener {
     private boolean useFormatFont = false;

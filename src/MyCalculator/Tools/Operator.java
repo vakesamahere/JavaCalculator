@@ -1,15 +1,17 @@
 package MyCalculator.Tools;
+
+import MyCalculator.Entity.Expression;
+
 import java.util.Arrays;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
 
-import MyCalculator.Entity.Expression;
-
 public abstract class Operator {
     public final static String operatorPath = "MyCalculator.Tools.Operators.";
     public final static String nonOpRegex = "[^A-Za-z]";
+    protected final static String pattrnFix = "&";
     public static List<List<String>> operators = Arrays.asList(
         Arrays.asList(
             "DefiniteIntegral"
@@ -59,21 +61,23 @@ public abstract class Operator {
             ,"ArrayMinus"//矩阵减
         )
     );
+    protected String[] parameters = new String[5];//record parameters need to be operated
     public static List<List<String>> patternStrings=new ArrayList<>();
     public static List<Pattern> patterns=new ArrayList<>();
     public static NumberFormat nf = NumberFormat.getInstance();
-    public String[] parameters = new String[5];//record parameters need to be operated
-    public static String pattern;
-    public static String[] punish;
-    public static boolean bracketlike;
-    public static boolean left;
-    public static boolean right;
+    public static String pattern;//在子类final，需要在反射里获取
+    public static boolean bracketlike;//在子类final
+    public static boolean left;//在子类final
+    public static boolean right;//在子类final
 
     public abstract String solve();//return a string(join the original expression) of the result
 
     public Operator(){
         nf.setGroupingUsed(false);
         nf.setMaximumFractionDigits(15);
+    }
+    public void setPa(int i,String value){
+        parameters[i]=value;
     }
     public static Boolean isNum(char c){
         if(('0'<=c)&&(c<='9')||(c=='.')||(c=='-')||(c==' '))return true;

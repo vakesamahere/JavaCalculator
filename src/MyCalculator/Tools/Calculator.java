@@ -1,4 +1,5 @@
 package MyCalculator.Tools;
+
 import MyCalculator.Lobby;
 import MyCalculator.Entity.Expression;
 import MyCalculator.Entity.ProgressBar;
@@ -13,9 +14,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Calculator {
-    public static boolean remainVar;
-    public static boolean execute;
-    public static NumberFormat nf = NumberFormat.getInstance();
+    private static boolean remainVar;
+    private static boolean execute;
+    private static NumberFormat nf = NumberFormat.getInstance();
     public static String calString(String expString){//预处理用户输入的算式字符串
         expString = "("+expString+")";
         //variables
@@ -26,6 +27,7 @@ public class Calculator {
             remainVar=false;
             expString=dealOperator(expString);
             expString=Lobby.getConstVarMgr().replaceVars(expString);
+            expString=dealOperator(expString);
             if(!execute)break;
         }
 
@@ -78,7 +80,7 @@ public class Calculator {
         List<Double> xs = new ArrayList<>();
         List<Double> ys = new ArrayList<>();
         //******************************************************
-        Lobby.getLogDisplayer().highFreq++;
+        Lobby.getLogDisplayer().highFreqCalStart();
         for(int i=0;i<n;i++){
             progress+=unitIcre;
             bar.setProgress(progress);
@@ -90,7 +92,7 @@ public class Calculator {
         }
         outputs[0]=xs;
         outputs[1]=ys;
-        Lobby.getLogDisplayer().highFreq--;
+        Lobby.getLogDisplayer().highFreqCalEnd();
         //******************************************************
         return outputs;
     }

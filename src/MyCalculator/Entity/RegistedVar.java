@@ -1,13 +1,13 @@
 package MyCalculator.Entity;
 
+import MyCalculator.Lobby;
+import MyCalculator.Tools.ComponentEditor;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
-
 import javax.swing.*;
 
-import MyCalculator.Lobby;
-import MyCalculator.Tools.ComponentEditor;
 
 public class RegistedVar extends Variable{
     private static final double heightRatio = 0.08;

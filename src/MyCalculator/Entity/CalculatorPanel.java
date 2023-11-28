@@ -1,17 +1,15 @@
 package MyCalculator.Entity;
-
-import javax.swing.*;
-
 import MyCalculator.Lobby;
 import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.ComponentEditor;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,24 +18,24 @@ import java.util.concurrent.Future;
 public class CalculatorPanel extends JPanel implements ActionListener,ComponentListener{
     private static final Color buttonColor = new Color(233, 233, 233);
 
-    public JTextField accuracyField;
-    public JTextField diaNameField;
-    public JTextField rightLimitField;
-    public JTextField leftLimitField;
+    private JTextField accuracyField;
+    private JTextField diaNameField;
+    private JTextField rightLimitField;
+    private JTextField leftLimitField;
     
-    public JButton solve;
-    public JButton table;
-    public JLabel expressionLabel;
-    public JLabel resultLabel;
-    public JLabel accuracyLabel;
-    public JLabel varDiaNameLabel;
-    public JLabel fromLabel;
-    public JLabel toLabel;
+    private JButton solve;
+    private JButton table;
+    private JLabel expressionLabel;
+    private JLabel resultLabel;
+    private JLabel accuracyLabel;
+    private JLabel varDiaNameLabel;
+    private JLabel fromLabel;
+    private JLabel toLabel;
 
     private DiagramDisplayer diagramDisplayer;
 
-    public IndependentVar varExp = new IndependentVar("Expression",true);
-    public IndependentVar varRes = new IndependentVar("Result",true);
+    private IndependentVar varExp = new IndependentVar("Expression",true);
+    private IndependentVar varRes = new IndependentVar("Result",true);
     private boolean running = false;
 
     private List<Double> rootsX = new ArrayList<>();
@@ -162,7 +160,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             List<Double>[] outputs = Calculator.listGen(expString,varName,start,end,n);
             outputss.add(outputs);
         }
-        diagramDisplayer.inputss = outputss;
+        diagramDisplayer.setInputss(outputss);
         //*****************************************************************************************
         //*****************************************************************************************
         String output="";
@@ -229,6 +227,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     }
     public DiagramDisplayer getDiagramDisplayer(){
         return diagramDisplayer;
+    }
+    public IndependentVar getVarRes(){
+        return varRes;
     }
     @Override
     public void actionPerformed(ActionEvent e){

@@ -4,7 +4,7 @@ import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;
 
 public class ArrayAdd extends Operator {
-    public final static String pattern = "M+M";
+    public final static String pattern = pattrnFix+Add.pattern+pattrnFix;
     public final static boolean bracketlike=false;
     public final static boolean left = true;
     public final static boolean right = true;

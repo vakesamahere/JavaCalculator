@@ -4,7 +4,7 @@ import MyCalculator.Tools.Calculator;
 import MyCalculator.Tools.Operator;
 
 public class ArrayMinus extends Operator {
-    public final static String pattern = "M_M";
+    public final static String pattern = pattrnFix+Minus.pattern+pattrnFix;
     public final static boolean bracketlike=false;
     public final static boolean left = true;
     public final static boolean right = true;

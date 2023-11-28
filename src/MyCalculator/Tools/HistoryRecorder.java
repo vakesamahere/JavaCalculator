@@ -53,6 +53,12 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         lost=false;
         addHistory=false;
     }
+    public void sleep(){
+        sleep=true;
+    }
+    public void wake(){
+        sleep=false;
+    }
     public void updateState(JTextArea t){
         //原始前后文本
         textTe=textCu;
@@ -63,6 +69,30 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         textCu=t.getText();
         textPreCu=textCu.substring(0,caretPosCu);
         textSufCu=textCu.substring(caretPosCu);
+    }
+    public void undo(){
+        sleep=true;
+        if(history.size()>0){
+            String backup = history.get(history.size()-1);
+            future.add(textArea.getText());
+            textArea.setText(backup);
+            history.remove(history.size()-1);
+            updateState(textArea);
+            modeCu=0;
+        }
+        sleep=false;
+    }
+    public void redo(){
+        sleep=true;
+        if(future.size()>0){
+            String backup = future.get(future.size()-1);
+            history.add(textArea.getText());
+            textArea.setText(backup);
+            future.remove(future.size()-1);
+            updateState(textArea);
+            modeCu=0;
+        }
+        sleep=false;
     }
     public void compare(JTextArea t){
         updateState(t);
@@ -140,10 +170,10 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
             compare(vaTextArea);
         }else if(!sleep&&e.getSource()==textArea){
             System.err.println("update occurred");
-            if (eed.softKeyboardInput||!textArea.isFocusOwner()) {
+            if (eed.getSoftKeyInput()||!textArea.isFocusOwner()) {
                 System.err.println("soft keyboard input");
                 addHistory=true;
-                eed.softKeyboardInput=false;
+                eed.setSoftKeyInput(false);
             }
             compare(textArea);
             System.err.println(history);
@@ -166,27 +196,11 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_Z){
-            sleep=true;
             if(!e.isShiftDown()){//撤销
-                if(history.size()>0){
-                    String backup = history.get(history.size()-1);
-                    future.add(textArea.getText());
-                    textArea.setText(backup);
-                    history.remove(history.size()-1);
-                    updateState(textArea);
-                    modeCu=0;
-                }
-            }else{
-                if(future.size()>0){//重做
-                    String backup = future.get(future.size()-1);
-                    history.add(textArea.getText());
-                    textArea.setText(backup);
-                    future.remove(future.size()-1);
-                    updateState(textArea);
-                    modeCu=0;
-                }
+                undo();
+            }else{//重做
+                redo();
             }
-            sleep=false;
         }
     }
     @Override

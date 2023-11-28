@@ -1,13 +1,11 @@
 package MyCalculator.Entity;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import MyCalculator.Lobby;
 
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
@@ -21,7 +19,7 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
     private static final String title = "Diagram Displayer";
     private static final NumberFormat nf = NumberFormat.getInstance();
 
-    public List<List<Double>[]> inputss;
+    private List<List<Double>[]> inputss;
     //List:[ResultA:[Xs:[Double,...],Ys:[...]],ResultB:[Xs:[...],Ys:[...]],...]
 
     public DiagramDisplayer(){
@@ -47,6 +45,9 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
         drawPanel.calRatio();
         drawPanel.calSize(inputss);
         drawPanel.calR();
+    }
+    public void setInputss(List<List<Double>[]> li){
+        inputss=li;
     }
     @Override
     public void mouseDragged(MouseEvent e) {

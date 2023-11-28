@@ -1,11 +1,11 @@
 package MyCalculator.Entity;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import MyCalculator.Lobby;
 import MyCalculator.Tools.ComponentEditor;
 
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 
