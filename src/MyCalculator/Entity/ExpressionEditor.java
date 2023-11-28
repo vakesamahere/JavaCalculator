@@ -1,7 +1,6 @@
 package MyCalculator.Entity;
 
 import javax.swing.*;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -14,7 +13,6 @@ import MyCalculator.Lobby;
 import MyCalculator.Tools.HistoryRecorder;
 
 import java.awt.*;
-import java.awt.event.*;
 
 public class ExpressionEditor extends JDialog implements DocumentListener,FocusListener,KeyListener,ComponentListener  {
     private static final double formSizeRatio = 0.4;
@@ -25,6 +23,7 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     private boolean hotKeyLock=false;
     private boolean ctrlPressed=false;
     private HistoryRecorder hr;
+    public boolean softKeyboardInput =false;//HistoryRecorder调用 用于判断判断软键盘输入
 
     JTextArea textArea;
     JScrollPane scrollPane;
@@ -64,7 +63,7 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         textArea.addCaretListener(caretListener);
         textArea.addKeyListener(this);
         
-        hr=new HistoryRecorder(textArea,va.getValueArea());
+        hr=new HistoryRecorder(textArea,va.getValueArea(),this);
     }
     public void refreshFont() {
         double size=50*Math.min(getHeight(),getWidth())/540;
@@ -108,7 +107,6 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         //textArea.setCaretPosition(pos);
         textArea.setSelectionStart(pos);
         textArea.setSelectionEnd(end);
-        
     }
     public void leftTab() {
         String str=classfication(textArea.getText());
@@ -165,7 +163,10 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     public void keyTyped(KeyEvent e) {
         if(hotKeyLock||ctrlPressed||e.getKeyChar()=='('||e.getKeyChar()=='['){
             boolean match = keyboard.keyTyped(e.getKeyChar());
-            if(match)e.consume();
+            if(match){
+                e.consume();
+                softKeyboardInput=true;
+            }
         }
         ctrlPressed=false;
     }

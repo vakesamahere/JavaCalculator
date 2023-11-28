@@ -2,6 +2,8 @@ package MyCalculator.Tools;
 import javax.swing.JTextArea;
 import javax.swing.event.*;
 
+import MyCalculator.Entity.ExpressionEditor;
+
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,17 +26,20 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     private int modeOp;
     private int modeText;
 
-    private boolean newFocus;
     private boolean sleep;
+    private boolean lost;
+    private boolean addHistory;
     private JTextArea textArea;
     private JTextArea vaTextArea;
-    public HistoryRecorder(JTextArea textArea,JTextArea vaTextArea){
+    private ExpressionEditor eed;
+    public HistoryRecorder(JTextArea textArea,JTextArea vaTextArea,ExpressionEditor eed){
         this.textArea=textArea;
         this.textArea.addCaretListener(this);
         this.textArea.addFocusListener(this);
         this.textArea.addKeyListener(this);
         this.vaTextArea=vaTextArea;
         this.vaTextArea.addCaretListener(this);
+        this.eed=eed;
         modeCu=0;
         history= Arrays.asList(textArea.getText());
         caretPosCu=textArea.getCaretPosition();
@@ -44,10 +49,11 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
 
         history=new ArrayList<>();
         future=new ArrayList<>();
-        newFocus=false;
         sleep=false;
+        lost=false;
+        addHistory=false;
     }
-    public void compare(JTextArea t){
+    public void updateState(JTextArea t){
         //原始前后文本
         textTe=textCu;
         textPreTe=textPreCu;
@@ -57,39 +63,47 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         textCu=t.getText();
         textPreCu=textCu.substring(0,caretPosCu);
         textSufCu=textCu.substring(caretPosCu);
+    }
+    public void compare(JTextArea t){
+        updateState(t);
         //比较pre和suf
         String upPre = getPreUpdate(textPreCu, textPreTe);
         String upSuf = getSufUpdate(textSufCu, textSufTe);
         String up=(upPre+upSuf);
         System.err.println(String.format("update:%s", up));
+        if(addHistory){
+            modeCu=0;
+        }else{
+            modeTe=modeCu;
+            //判断输入类型，与上次相异则加入history
+            if((addPre+addSuf==0)&&(upPre.equals(upSuf))){//仅仅移动光标
+                System.err.println("only the caret moved.");
+                return;
+            }
+            //必有一个是0
+            if(addPre<0||addSuf<0){//delete
+                modeOp=0;
+                System.err.println("delete");
+            }else{//insert
+                modeOp=1;
+                System.err.println("insert");
+            }
+            try {//数字类型
+                Double.parseDouble(up);
+                modeText=0;
+                System.err.println("num");
+            } catch (Exception e) {
+                modeText=2;
+                System.err.println("aplha");
+            }
+            modeCu = modeOp+modeText;
+        }
 
-        modeTe=modeCu;
-        //判断输入类型，与上次相异则加入history
-        if((addPre+addSuf==0)&&(upPre.equals(upSuf))){//仅仅移动光标
-            System.err.println("only the caret moved.");
-            return;
-        }
-        //必有一个是0
-        if(addPre<0||addSuf<0){//delete
-            modeOp=0;
-            System.err.println("delete");
-        }else{//insert
-            modeOp=1;
-            System.err.println("insert");
-        }
-        try {//数字类型
-            double temp = Double.parseDouble(up);
-            modeText=0;
-            System.err.println("num");
-        } catch (Exception e) {
-            modeText=2;
-            System.err.println("aplha");
-        }
-        modeCu = modeOp+modeText;
-        if(modeCu!=modeTe){//history generation
+        future.clear();
+        if(addHistory||modeCu!=modeTe){//history generation
+            addHistory=false;
             System.err.println("success");
             history.add(textTe);
-            future.clear();
         }
 
         System.err.println(String.format("prefixUpdate:%s", upPre));
@@ -121,59 +135,61 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     }
     @Override
     public void caretUpdate(CaretEvent e) {
-        if(e.getSource()==textArea&&textArea.isFocusOwner()){
-            if(newFocus||sleep){
-                newFocus=false;
-                return;
-            }
+        if((!vaTextArea.isFocusOwner())&&(!textArea.isFocusOwner()))lost=true;
+        if(e.getSource()==vaTextArea&&vaTextArea.isFocusOwner()){
+            compare(vaTextArea);
+        }else if(!sleep&&e.getSource()==textArea){
             System.err.println("update occurred");
+            if (eed.softKeyboardInput||!textArea.isFocusOwner()) {
+                System.err.println("soft keyboard input");
+                addHistory=true;
+                eed.softKeyboardInput=false;
+            }
             compare(textArea);
             System.err.println(history);
-        }else if(e.getSource()==vaTextArea&&vaTextArea.isFocusOwner()){
-            compare(vaTextArea);
         }
 
     }
     @Override
     public void focusGained(FocusEvent e) {
-        newFocus=true;
-        sleep=false;
         System.err.println("focus gained");
         System.err.println(textArea.getText());
-        if(history.size()>0&&history.get(history.size()-1).length()==0)history.remove(history.size()-1);
+        if(!lost)return;
+        if(history.size()>1&&history.get(history.size()-1).length()==0)history.remove(history.size()-1);
         if(history.size()>0&&history.get(history.size()-1).equals(textArea.getText()))history.remove(history.size()-1);
+        lost=false;
     }
     @Override
-    public void focusLost(FocusEvent e) {
-        sleep=true;
-    }
+    public void focusLost(FocusEvent e) {}
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_Z){
             sleep=true;
-            if(!e.isShiftDown()){
+            if(!e.isShiftDown()){//撤销
                 if(history.size()>0){
                     String backup = history.get(history.size()-1);
                     future.add(textArea.getText());
                     textArea.setText(backup);
                     history.remove(history.size()-1);
+                    updateState(textArea);
+                    modeCu=0;
                 }
             }else{
-                if(future.size()>0){
+                if(future.size()>0){//重做
                     String backup = future.get(future.size()-1);
                     history.add(textArea.getText());
                     textArea.setText(backup);
                     future.remove(future.size()-1);
+                    updateState(textArea);
+                    modeCu=0;
                 }
             }
             sleep=false;
         }
     }
     @Override
-    public void keyReleased(KeyEvent e) {
-    }
+    public void keyReleased(KeyEvent e) {}
     
 }

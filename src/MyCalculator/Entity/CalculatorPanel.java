@@ -124,7 +124,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     public void calWork(){
         running=true;
         long stratTime = System.currentTimeMillis();
-        String result = Calculator.calString(varExp.getValueArea().getText());
+        String result = varExp.getSelected();
+        if(result.length()==0)result = varExp.getValueArea().getText();
+        result = Calculator.calString(result);
         result = Calculator.cal(result);
         varRes.getValueArea().setText(result);
         long endTime = System.currentTimeMillis();
@@ -136,7 +138,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     public void diaWork(){
         running=true;
         long stratTime = System.currentTimeMillis();
-        String[] exps=varExp.getValueArea().getText().split(";");
+        String input = varExp.getSelected();
+        if(input.length()==0)input = varExp.getValueArea().getText();
+        String[] exps=input.split(";");
         Double start,end;
         int n;
         String 
