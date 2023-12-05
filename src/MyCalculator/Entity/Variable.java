@@ -1,19 +1,19 @@
-package MyCalculator.Entity;
+package mycalculator.entity;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import javax.swing.*;
 
-import MyCalculator.Lobby;
+import mycalculator.Lobby;
 
 public class Variable implements ActionListener{
     protected static final Color buttonColor = new Color(255, 255, 255);
-    protected JPanel selfPanel;//
-    protected JTextArea valueText;//
-    protected JButton modifyButton;//
-    protected JScrollPane scrollPane;//
-    protected ExpressionEditor dialog;//
+    protected JPanel selfPanel;
+    protected JTextArea valueText;
+    protected JButton modifyButton;
+    protected JScrollPane scrollPane;
+    protected ExpressionEditor dialog;
     protected String name;
     protected String value="";
     public Variable(){
@@ -21,18 +21,21 @@ public class Variable implements ActionListener{
     }
     public Variable(String str,Boolean ini){
         name=str;
-        if(ini)initialize();
+        if(ini){
+            initialize();
+        }
     }
+    /**抽象变量，不设置panel*/
     public Variable(String str,String val){
         name=str;
         value =val;
     }
     public void initialize(){
         selfPanel=new JPanel(null);
-        modifyButton=new JButton("...");//
-        valueText=new JTextArea();//
-        scrollPane=new JScrollPane(valueText);//
-        dialog=new ExpressionEditor(this);//
+        modifyButton=new JButton("...");
+        valueText=new JTextArea();
+        scrollPane=new JScrollPane(valueText);
+        dialog=new ExpressionEditor(this);
 
         modifyButton.setBackground(buttonColor);
         scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray,1));

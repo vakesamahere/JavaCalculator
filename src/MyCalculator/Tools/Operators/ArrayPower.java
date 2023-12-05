@@ -1,6 +1,6 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Operator;
 
 public class ArrayPower extends Operator {
     public final static String pattern = pattrnFix+Power.pattern+pattrnFix;
@@ -11,10 +11,15 @@ public class ArrayPower extends Operator {
     }
     public String solve(){
         String[] arr = Operator.stringToArray(parameters[0]);
-        int n=arr.length;//方阵
+        //方阵
+        int n=arr.length;
         int times = (int)Double.parseDouble(parameters[1]);
         String[][] I = new String[n][n];
-        for(int i=0;i<n;i++)for(int j=0;j<n;j++)I[i][j]=(i==j)?"1":"0";
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                I[i][j]=(i==j)?"1":"0";
+            }
+        }
         String output = Operator.matrixToString(I);
         ArrayTime arraytime = new ArrayTime();
         arraytime.setPa(2, "array");

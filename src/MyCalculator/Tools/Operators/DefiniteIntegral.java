@@ -1,11 +1,11 @@
-package MyCalculator.Tools.Operators;
+package mycalculator.tools.Operators;
 
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Entity.ProgressBar;
-import MyCalculator.Entity.Variable;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.entity.ProgressBar;
+import mycalculator.entity.Variable;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 
 public class DefiniteIntegral extends Operator{
     public final static String pattern = "inte";
@@ -29,7 +29,6 @@ public class DefiniteIntegral extends Operator{
             n=Integer.valueOf(Calculator.cal(parameters[4]));
         }catch(Exception e){
             n=1000;
-            //e.printStackTrace();
         }
 
         unit=Math.abs(Double.parseDouble(b)-Double.parseDouble(a))/n;
@@ -44,30 +43,24 @@ public class DefiniteIntegral extends Operator{
         Double result=0.0;
         Double dx=Double.parseDouble(a);
         if(Math.abs(dx-Double.parseDouble(b))<1E-10){
-            //System.err.println("a=b");
             return "0";
         }
 
-        //System.err.println("start..");
         Double unitIcre = 100.0/n;
         Double progress=0.0;
         ProgressBar bar = Lobby.getProgressBar();
         bar.setProgress(0.0);
 
         Lobby.getLogDisplayer().highFreqCalStart();
-        //long stratTime = System.nanoTime();
         //*****************************************************
         for(int i=0;i<n;i++) {
             progress+=unitIcre;
-            bar.setProgress(progress);//cost less than 2%
+            //cost less than 2%
+            bar.setProgress(progress);
             result+=Double.parseDouble(Calculator.cal(fx.replace(varString, nf.format(dx))));
             dx+=unit;
-            //System.err.println(String.format("n=%d,i=%d,dx=%.4f,result=%.4f",n,i,dx,result)); cost 17.5% more
         }
         //*****************************************************
-        //long endTime = System.nanoTime();  
-        //System.err.println(String.format("TimeCosted:%d",endTime-stratTime));
-        //System.err.println("Done!");
         Lobby.getLogDisplayer().highFreqCalEnd();
         
         result/=n/(Double.parseDouble(b)-Double.parseDouble(a));

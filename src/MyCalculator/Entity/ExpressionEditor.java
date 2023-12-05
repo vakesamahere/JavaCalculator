@@ -1,7 +1,4 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.HistoryRecorder;
+package mycalculator.entity;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -9,6 +6,10 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
+
+import mycalculator.Lobby;
+import mycalculator.tools.HistoryRecorder;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -21,7 +22,8 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     private boolean hotKeyLock=false;
     private boolean ctrlPressed=false;
     private HistoryRecorder hr;
-    private boolean softKeyboardInput =false;//HistoryRecorder调用 用于判断判断软键盘输入
+    /**HistoryRecorder调用 用于判断判断软键盘输入*/
+    private boolean softKeyboardInput =false;
 
     private JTextArea textArea;
     private JScrollPane scrollPane;
@@ -98,19 +100,24 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         String str=classfication(textArea.getText());
         int pos = str.indexOf("1",dot);
         if(pos==-1){
-            if(dot==str.length())return;
+            if(dot==str.length()){
+                return;
+            }
             textArea.setCaretPosition(++dot);
             return;
         }
         pos = str.indexOf("0",pos);
         if(pos==-1){
-            if(dot==str.length())return;
+            if(dot==str.length()){
+                return;
+            }
             textArea.setCaretPosition(++dot);
             return;
         }
         int end = str.indexOf("1",pos);
-        if(end==-1)end=str.length();
-        //textArea.setCaretPosition(pos);
+        if(end==-1){
+            end=str.length();
+        }
         textArea.setSelectionStart(pos);
         textArea.setSelectionEnd(end);
     }
@@ -118,13 +125,17 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         String str=classfication(textArea.getText());
         int pos = str.lastIndexOf("1",dot-1);
         if(pos==-1){
-            if(dot==0)return;
+            if(dot==0){
+                return;
+            }
             textArea.setCaretPosition(--dot);
             return;
         }
         pos = str.lastIndexOf("0",pos);
         if(pos==-1){
-            if(dot==0)return;
+            if(dot==0){
+                return;
+            }
             textArea.setCaretPosition(--dot);
             return;
         }
@@ -162,7 +173,9 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     @Override
     public void focusLost(FocusEvent e) {
         textArea.getCaret().setVisible(true);
-        if(keyboard.isFocused())return;
+        if(keyboard.isFocused()){
+            return;
+        }
         textArea.setForeground(Color.WHITE);
     }
     @Override
@@ -184,7 +197,7 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
         if(e.getKeyCode()==KeyEvent.VK_CONTROL){
             ctrlPressed=!ctrlPressed;
         }
-        if(e.isControlDown()&&e.getKeyCode()==192){//`~
+        if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_BACK_QUOTE){
             hotKeyLock=!hotKeyLock;
             ctrlPressed=false;
         }

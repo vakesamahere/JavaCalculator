@@ -1,7 +1,7 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class MatrixInv extends Operator {
     public final static String pattern = "inv";
     public final static boolean bracketlike=true;
@@ -10,32 +10,40 @@ public class MatrixInv extends Operator {
     public MatrixInv(){
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         String[] array = stringToArray(Calculator.cal(parameters[0]));
         String[][] matrixStr = arrayToMatrix(array);
         //方阵
         int n=matrixStr.length;
-        Double matrixHalf[][] = Operator.matrixToDoubles(matrixStr);
+        Double[][] matrixHalf = Operator.matrixToDoubles(matrixStr);
         Double[][] matrix = new Double[n][2*n];
         for(int i=0;i<n;i++){
             System.arraycopy(matrixHalf[i], 0, matrix[i], 0, n);
-            for(int j=0;j<n;j++)matrix[i][n+j]=(i==j)?1.0:0.0;
+            for(int j=0;j<n;j++){
+                matrix[i][n+j]=(i==j)?1.0:0.0;
+            }
         }
         //高斯
         for(int i=0;i<n;i++){
             for(int k=i;k<n;k++){
-                if(Math.abs(matrix[i][i])<Math.abs(matrix[k][i]))Operator.matrixRowSwap(matrix, i, k);
+                if(Math.abs(matrix[i][i])<Math.abs(matrix[k][i])){
+                    Operator.matrixRowSwap(matrix, i, k);
+                }
             }
-            if(matrix[i][i]==0)return "{ERROR:DET=0}";
+            if(matrix[i][i]==0){
+                return "{ERROR:DET=0}";
+            }
             Operator.matrixRowMul(matrix, i, 1/matrix[i][i]);
             for(int k=0;k<n;k++){
-                if(k==i)continue;
+                if(k==i){
+                    continue;
+                }
                 Operator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
             }
         }
         Double[][] resultMatrix = new Double[n][n];
-        for(int i=0;i<n;i++)System.arraycopy(matrix[i], n, resultMatrix[i], 0, n);
-        //Lobby.getLogDisplayer().addLog(String.format("[Output]MatrixInv(%s)=%s", num,output));
+        for(int i=0;i<n;i++){
+            System.arraycopy(matrix[i], n, resultMatrix[i], 0, n);
+        }
         String output = Operator.matrixToString(resultMatrix);
         return output;
     }

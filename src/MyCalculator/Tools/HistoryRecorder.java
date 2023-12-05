@@ -1,8 +1,8 @@
-package MyCalculator.Tools;
+package mycalculator.tools;
 import javax.swing.JTextArea;
 import javax.swing.event.*;
 
-import MyCalculator.Entity.ExpressionEditor;
+import mycalculator.entity.ExpressionEditor;
 
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -12,14 +12,14 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     private List<String> history;
     private List<String> future;
     private String textTe;
-    private String textPreTe;//
-    private String textSufTe;//
+    private String textPreTe;
+    private String textSufTe;
     private int modeTe;
 
     private int caretPosCu;
     private String textCu;
-    private String textPreCu;//
-    private String textSufCu;//
+    private String textPreCu;
+    private String textSufCu;
     private int modeCu;
     private int addPre;
     private int addSuf;
@@ -106,12 +106,14 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         }else{
             modeTe=modeCu;
             //判断输入类型，与上次相异则加入history
-            if((addPre+addSuf==0)&&(upPre.equals(upSuf))){//仅仅移动光标
+            //仅仅移动光标
+            if((addPre+addSuf==0)&&(upPre.equals(upSuf))){
                 System.err.println("only the caret moved.");
                 return;
             }
             //必有一个是0
-            if(addPre<0||addSuf<0){//delete
+            //delete
+            if(addPre<0||addSuf<0){
                 modeOp=0;
                 System.err.println("delete");
             }else{//insert
@@ -130,7 +132,8 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         }
 
         future.clear();
-        if(addHistory||modeCu!=modeTe){//history generation
+        //history generation
+        if(addHistory||modeCu!=modeTe){
             addHistory=false;
             System.err.println("success");
             history.add(textTe);
@@ -145,7 +148,9 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         int d = a.length()-b.length();
         if(d<=0){
             addPre=-1;
-            if(d==0)addPre=0;
+            if(d==0){
+                addPre=0;
+            }
             return b.substring(a.length());
         }else{ 
             addPre=1;
@@ -156,7 +161,9 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
         int d=a.length()-b.length();
         if(d<=0){
             addSuf=-1;
-            if(d==0)addSuf=0;
+            if(d==0){
+                addSuf=0;
+            }
             return b.substring(0,-d);
         }else{
             addSuf=1;
@@ -165,7 +172,9 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     }
     @Override
     public void caretUpdate(CaretEvent e) {
-        if((!vaTextArea.isFocusOwner())&&(!textArea.isFocusOwner()))lost=true;
+        if((!vaTextArea.isFocusOwner())&&(!textArea.isFocusOwner())){
+            lost=true;
+        }
         if(e.getSource()==vaTextArea&&vaTextArea.isFocusOwner()){
             compare(vaTextArea);
         }else if(!sleep&&e.getSource()==textArea){
@@ -184,9 +193,15 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     public void focusGained(FocusEvent e) {
         System.err.println("focus gained");
         System.err.println(textArea.getText());
-        if(!lost)return;
-        if(history.size()>1&&history.get(history.size()-1).length()==0)history.remove(history.size()-1);
-        if(history.size()>0&&history.get(history.size()-1).equals(textArea.getText()))history.remove(history.size()-1);
+        if(!lost){
+            return;
+        }
+        if(history.size()>1&&history.get(history.size()-1).length()==0){
+            history.remove(history.size()-1);
+        }
+        if(history.size()>0&&history.get(history.size()-1).equals(textArea.getText())){
+            history.remove(history.size()-1);
+        }
         lost=false;
     }
     @Override
@@ -196,9 +211,9 @@ public class HistoryRecorder implements CaretListener,FocusListener,KeyListener 
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_Z){
-            if(!e.isShiftDown()){//撤销
+            if(!e.isShiftDown()){
                 undo();
-            }else{//重做
+            }else{
                 redo();
             }
         }

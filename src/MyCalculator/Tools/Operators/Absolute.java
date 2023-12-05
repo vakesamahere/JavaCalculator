@@ -1,7 +1,7 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Absolute extends Operator {
     public final static String pattern = "abs";
     public final static boolean bracketlike=true;
@@ -10,10 +10,8 @@ public class Absolute extends Operator {
     public Absolute(){
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         Double result = Math.abs(Double.valueOf(Calculator.cal(parameters[0])));
         String output = nf.format(result);
-        //System.err.println(output);
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

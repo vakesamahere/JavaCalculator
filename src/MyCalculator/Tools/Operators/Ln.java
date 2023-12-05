@@ -1,8 +1,8 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Ln extends Operator {
     public final static String pattern = "ln";
     public final static boolean bracketlike=true;
@@ -11,7 +11,6 @@ public class Ln extends Operator {
     public Ln(){
     }
     public String solve(){
-        //System.err.println("Solve:ln "+parameters[0]);
         Double num = Double.valueOf(Calculator.cal(parameters[0]));
         Double result = Math.log(num);
         String output = nf.format(result);

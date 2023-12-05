@@ -1,4 +1,4 @@
-package MyCalculator.Entity;
+package mycalculator.entity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -169,7 +169,6 @@ public class Keyboard extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 JTextArea t = parent.getTextArea();
                 t.setText("");
-                //t.setCaretPosition(0);
             }
         });
         keys[index++]=new FunctionalKey("[Switch]Top",this,opPanel,buttonColor,new ActionListener() {
@@ -207,9 +206,13 @@ public class Keyboard extends JDialog{
         output.setCaretPosition(pos+offset);
     }
     public boolean keyTyped(char keyChar) {
-        if(keyChar==' ')return false;
+        if(keyChar==' '){
+            return false;
+        }
         int ind=hotKeys.indexOf(keyChar);
-        if(ind==-1)return false;
+        if(ind==-1){
+            return false;
+        }
         keys[ind].click();
         return true;
     }

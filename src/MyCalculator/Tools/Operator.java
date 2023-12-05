@@ -1,6 +1,4 @@
-package MyCalculator.Tools;
-
-import MyCalculator.Entity.Expression;
+package mycalculator.tools;
 
 import java.util.Arrays;
 import java.text.NumberFormat;
@@ -8,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.*;
 
+import mycalculator.entity.Expression;
+
 public abstract class Operator {
-    public final static String operatorPath = "MyCalculator.Tools.Operators.";
+    public final static String operatorPath = "mycalculator.tools.Operators.";
     public final static String nonOpRegex = "[^A-Za-z]";
     protected final static String pattrnFix = "&";
     public static List<List<String>> operators = Arrays.asList(
@@ -17,8 +17,8 @@ public abstract class Operator {
             "DefiniteIntegral"
             ,"Sum"
             ,"Multiplicative"
-            ,"ArraySum"//求和
-            ,"ArrayMultiplicative"//求积
+            ,"ArraySum"
+            ,"ArrayMultiplicative"
         ),
         Arrays.asList(
             "Bracket"
@@ -32,45 +32,46 @@ public abstract class Operator {
             ,"Arccos"
             ,"Arctan"
             ,"Absolute"
-            ,"MatrixJointRow"//行拼接
-            ,"MatrixJointCol"//列拼接
-            ,"MatrixDet"//求行列式
-            ,"MatrixInv"//逆矩阵
-            ,"MatrixTrans"//转置
-            ,"Mean"//期望
-            ,"Variance"//方差
-            ,"Covariance"//协方差
+            ,"MatrixJointRow"
+            ,"MatrixJointCol"
+            ,"MatrixDet"
+            ,"MatrixInv"
+            ,"MatrixTrans"
+            ,"Mean"
+            ,"Variance"
+            ,"Covariance"
         ),
         Arrays.asList(
             "Percent"
         ),
         Arrays.asList(
             "Power"
-            ,"ArrayPower"//矩阵幂运算
+            ,"ArrayPower"
         ),
         Arrays.asList(
             "Time"
             ,"Divide"
-            ,"ArrayTime"//数乘&矩阵乘法
-            ,"ArrayDivide"//矩阵和数的除法
+            ,"ArrayTime"
+            ,"ArrayDivide"
         ),
         Arrays.asList(
             "Add"
             ,"Minus"
-            ,"ArrayAdd"//矩阵加
-            ,"ArrayMinus"//矩阵减
+            ,"ArrayAdd"
+            ,"ArrayMinus"
         )
     );
-    protected String[] parameters = new String[5];//record parameters need to be operated
+    protected String[] parameters = new String[5];
     public static List<List<String>> patternStrings=new ArrayList<>();
     public static List<Pattern> patterns=new ArrayList<>();
     public static NumberFormat nf = NumberFormat.getInstance();
-    public static String pattern;//在子类final，需要在反射里获取
-    public static boolean bracketlike;//在子类final
-    public static boolean left;//在子类final
-    public static boolean right;//在子类final
-
-    public abstract String solve();//return a string(join the original expression) of the result
+    /**在子类final，一些需要在反射里获取*/
+    public static String pattern;
+    public static boolean bracketlike;
+    public static boolean left;
+    public static boolean right;
+    /**return a string(join the original expression) of the result*/
+    public abstract String solve();
 
     public Operator(){
         nf.setGroupingUsed(false);
@@ -80,7 +81,9 @@ public abstract class Operator {
         parameters[i]=value;
     }
     public static Boolean isNum(char c){
-        if(('0'<=c)&&(c<='9')||(c=='.')||(c=='-')||(c==' '))return true;
+        if(('0'<=c)&&(c<='9')||(c=='.')||(c=='-')||(c==' ')){
+            return true;
+        }
         return false;
     }
     public String getPattern(){
@@ -88,11 +91,13 @@ public abstract class Operator {
     }
     public static void loadSelfSingle(String expString,Expression expression,String pattern,boolean left,boolean right,int pos){// (...)?(...)
         //single operation
-        if(left){//capture the left number
+        //capture the left number
+        if(left){
             int tempPos=pos;
             boolean end = false;
             //if(pos==0)find=false;
-            while(true){//skip other unary
+            //skip other unary
+            while(true){
                 char tempChar=expString.charAt(tempPos);
                 if(!isNum(tempChar)||tempChar==' '){
                     tempPos--;
@@ -102,9 +107,11 @@ public abstract class Operator {
                     }
                     continue;
                 }
-                break;//find a number
+                //find a number
+                break;
             }
-            while(!end){//include the numbers
+            //include the numbers
+            while(!end){
                 char tempChar=expString.charAt(tempPos);
                 if(isNum(tempChar)){
                     tempPos--;
@@ -113,19 +120,22 @@ public abstract class Operator {
                     }
                     continue;
                 }
-                break;//not a number
+                //not a number
+                break;
             }
-            //System.err.println("find:"+expString.substring(tempPos+1, pos)+";");
+            
             expression.o.parameters[0]=expString.substring(tempPos+1,pos);
             expression.prefix=expString.substring(0,tempPos+1);
         }else{
             expression.prefix=expString.substring(0,pos);
         }
-        if(right){//capture the right number
+        //capture the right number
+        if(right){
             int tempPos=pos+pattern.length();
             int end = expString.length();
             boolean endB = false;
-            while(true){//skip other unary
+            //skip other unary
+            while(true){
                 char tempChar=expString.charAt(tempPos);
                 if(!isNum(tempChar)||tempChar==' '){
                     tempPos++;
@@ -160,15 +170,21 @@ public abstract class Operator {
         int delta = 1;
         while (true) {
             char tempChar=expString.charAt(pos2);
-            if(tempChar=='(')delta++;
-            if(tempChar==')')delta--;
-            if(delta==0)break;
+            if(tempChar=='('){
+                delta++;
+            }
+            if(tempChar==')'){
+                delta--;
+            }
+            if(delta==0){
+                break;
+            }
             pos2++;
         }
         expression.o.parameters[0]=expString.substring(pos1+1, pos2);
-        expression.prefix=expString.substring(0,pos1-pattern.length());//cut alpha
+        //cut alpha
+        expression.prefix=expString.substring(0,pos1-pattern.length());
         if(pos2+1>=expString.length()){
-            //System.err.println("end..");
             expression.suffix="";
         }else{
             expression.suffix=expString.substring(pos2+1);
@@ -182,17 +198,29 @@ public abstract class Operator {
         boolean end = false;
         int pos2=0;
         for(int i=0;i<commaCount;i++){
-            if(i>0)posComma[i]=posComma[i-1]+1;
+            if(i>0){
+                posComma[i]=posComma[i-1]+1;
+            }
             while (true) {
                 char tempChar=expString.charAt(posComma[i]);
-                if(tempChar=='(')delta++;
-                if(tempChar=='[')delta++;
-                if(tempChar==')')delta--;
-                if(tempChar==']')delta--;
+                if(tempChar=='('){
+                    delta++;
+                }
+                if(tempChar=='['){
+                    delta++;
+                }
+                if(tempChar==')'){
+                    delta--;
+                }
+                if(tempChar==']'){
+                    delta--;
+                }
                 if(delta==1&&tempChar==','){
                     break;
                 }
-                if(delta==0)break;
+                if(delta==0){
+                    break;
+                }
                 posComma[i]++;
             }
             if(delta==0){
@@ -202,12 +230,20 @@ public abstract class Operator {
                 break;
             }
         }
-        if(!end)pos2 = posComma[commaCount-1]+1;
+        if(!end){
+            pos2 = posComma[commaCount-1]+1;
+        }
         while (!end) {
             char tempChar=expString.charAt(pos2);
-            if(tempChar=='(')delta++;
-            if(tempChar==')')delta--;
-            if(delta==0)break;
+            if(tempChar=='('){
+                delta++;
+            }
+            if(tempChar==')'){
+                delta--;
+            }
+            if(delta==0){
+                break;
+            }
             pos2++;
         }
         int posCount;
@@ -216,14 +252,13 @@ public abstract class Operator {
             try{
                 expression.o.parameters[posCount+1]=expString.substring(posComma[posCount]+1,posComma[posCount+1]);
             }catch(Exception e){
-                //e.printStackTrace();
                 break;
             }
         }
         expression.o.parameters[posCount+1]=expString.substring(posComma[posCount]+1,pos2);
-        expression.prefix=expString.substring(0,pos1-pattern.length());//cut alpha
+        //cut alpha
+        expression.prefix=expString.substring(0,pos1-pattern.length());
         if(pos2+1>=expString.length()){
-            //System.err.println("end..");
             expression.suffix="";
         }else{
             expression.suffix=expString.substring(pos2+1);
@@ -250,8 +285,12 @@ public abstract class Operator {
                     int delta=1;
                     while(delta!=0){
                         tempPos--;
-                        if(expString.charAt(tempPos)==']')delta++;
-                        if(expString.charAt(tempPos)=='[')delta--;
+                        if(expString.charAt(tempPos)==']'){
+                            delta++;
+                        }
+                        if(expString.charAt(tempPos)=='['){
+                            delta--;
+                        }
                     }//tempPos>>'['
                     expression.o.parameters[2]="array";
                     expression.o.parameters[0]=expString.substring(tempPos, rightPos);
@@ -296,8 +335,12 @@ public abstract class Operator {
                     int leftPos=tempPos;
                     while(delta!=0){
                         tempPos++;
-                        if(expString.charAt(tempPos)=='[')delta++;
-                        if(expString.charAt(tempPos)==']')delta--;
+                        if(expString.charAt(tempPos)=='['){
+                            delta++;
+                        }
+                        if(expString.charAt(tempPos)==']'){
+                            delta--;
+                        }
                     }
                     tempPos++;//tempPos-1>>]
                     expression.o.parameters[3]="array";
@@ -331,67 +374,78 @@ public abstract class Operator {
             patternStrings.add(new ArrayList<>());
             for (String className : Operator.operators.get(i)){
                 try{
-                    Class<?> Op = Class.forName(operatorPath+className);
-                    String pattern = (String)Op.getDeclaredField("pattern").get(null);
+                    Class<?> op = Class.forName(operatorPath+className);
+                    String pattern = (String)op.getDeclaredField("pattern").get(null);
                     patternStrings.get(i).add(pattern);
                     String piece="";
                     for(char c:pattern.toCharArray()){
                         piece+=String.format("[%s]", c);
                     }
-                    //boolean tempBracketLike=(Boolean)Op.getDeclaredField("bracketLike").get(null);
-                    //boolean tempLeft=(Boolean)Op.getDeclaredField("left").get(null);
-                    //boolean tempRight=(Boolean)Op.getDeclaredField("right").get(null);
                     
                     regex+=String.format("|%s(%s)%s",nonOpRegex, piece,nonOpRegex);
                 }catch(Exception e){
                     e.printStackTrace();
-                    //System.out.println("sth wrong when generating regex arrays");
                 }
             }
             regex=regex.substring(1);
-            //System.out.println(regex);
             Pattern pat = Pattern.compile(regex);
             patterns.add(pat);
         }
     }
     public static String[] stringToArray(String str){
-        int n=0,delta=0,len=str.length();//m行n列
+        //m行n列
+        int n=0,delta=0,len=str.length();
         int pos=0;
         char[] chars = str.toCharArray();
         List<String> tempStrings = new ArrayList<>();
         for(int i=0;i<len;i++){
-            if(chars[i]=='[')delta++;
-            if(chars[i]=='['&&delta==1){//开始
+            if(chars[i]=='['){
+                delta++;
+            }
+            //开始
+            if(chars[i]=='['&&delta==1){
                 pos=i;
             }
-            if((chars[i]==','||chars[i]==']')&&delta==1){//向量的一个元素
+            //向量的一个元素
+            if((chars[i]==','||chars[i]==']')&&delta==1){
                 tempStrings.add(str.substring(pos+1, i));
                 pos=i;
             }
-            if(chars[i]==']')delta--;
+            if(chars[i]==']'){
+                delta--;
+            }
         }
         n=tempStrings.size();
         String[] array = new String[n];
-        for(int j=0;j<n;j++)array[j]=tempStrings.get(j);
+        for(int j=0;j<n;j++){
+            array[j]=tempStrings.get(j);
+        }
 
         return array;
     }
     public static String arrayToString(String[] array){
-        String output=String.format("[%s]", String.join(" , ", array));//[ , , , ]
+        //[ , , , ]
+        String output=String.format("[%s]", String.join(" , ", array));
         return output;
     }
     public static String[][] arrayToMatrix(String[] array){
         int m=array.length;
         List<String[]> tempStringss= new ArrayList<>();
-        for(int i=0;i<m;i++)tempStringss.add(stringToArray(array[i]));
+        for(int i=0;i<m;i++){
+            tempStringss.add(stringToArray(array[i]));
+        }
         if(tempStringss.size()==0||tempStringss.get(0).length==0){
             String[][] output = new String[array.length][1];
-            for(int i=0;i<array.length;i++)output[i][0]=array[i];
+            for(int i=0;i<array.length;i++){
+                output[i][0]=array[i];
+            }
             return output;
         }
         String[][] output = new String[m][tempStringss.size()];
         int index=0;
-        for(String[] tempStrings:tempStringss)output[index++]=tempStrings;
+        for(String[] tempStrings:tempStringss){
+            output[index++]=tempStrings;
+        }
         
         return output;
     }
@@ -407,7 +461,9 @@ public abstract class Operator {
         List<String> tempStrings = new ArrayList<>();
         for(Double[] array:matrix){
             String[] arrayStr = new String[array.length];
-            for(int i=0;i<array.length;i++)arrayStr[i]=nf.format(array[i]);
+            for(int i=0;i<array.length;i++){
+                arrayStr[i]=nf.format(array[i]);
+            }
             tempStrings.add(String.format("[%s]", String.join(" , ", arrayStr)));
         }
         String output = String.format("[%s]", String.join(" , ", tempStrings));
@@ -416,7 +472,11 @@ public abstract class Operator {
     public static Double[][] matrixToDoubles(String[][] matrix){
         int n=matrix.length,m=matrix[0].length;
         Double[][] md = new Double[n][m];
-        for(int i=0;i<n;i++)for(int j=0;j<m;j++)md[i][j] = Double.valueOf(Calculator.cal(matrix[i][j]));
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                md[i][j] = Double.valueOf(Calculator.cal(matrix[i][j]));
+            }
+        }
         return md;
     }
     public static void matrixRowAdd(Double[][] matrix,int rowSource,int rowTarget,double ratio){
@@ -428,7 +488,9 @@ public abstract class Operator {
     }
     public static void matrixRowMul(Double[][] matrix,int row,double ratio){
         int len = matrix[row].length;
-        for(int i=0;i<len;i++)matrix[row][i]*=ratio;
+        for(int i=0;i<len;i++){
+            matrix[row][i]*=ratio;
+        }
     }
     public static void matrixRowSwap(Double[][] matrix,int rowSource,int rowTarget){
         Double[] temp = matrix[rowSource];

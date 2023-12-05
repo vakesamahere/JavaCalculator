@@ -1,9 +1,9 @@
-package MyCalculator.Tools.Operators;
+package mycalculator.tools.Operators;
 
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Divide extends Operator {
     public final static String pattern = "/";
     public final static boolean bracketlike=true;
@@ -12,7 +12,8 @@ public class Divide extends Operator {
     public Divide(){
     }
     public String solve(){
-        if(parameters[0].indexOf(']')!=-1){//矩阵/数字
+        //矩阵/数字
+        if(parameters[0].indexOf(']')!=-1){
             return parameters[0]+String.format("%s%s%s",pattrnFix, pattern, pattrnFix)+parameters[1];
         }
         Double num1 = Double.valueOf(Calculator.cal(parameters[0]));

@@ -1,8 +1,8 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Minus extends Operator {
     public final static String pattern = "@Minus@";
     public final static boolean bracketlike=false;
@@ -21,12 +21,13 @@ public class Minus extends Operator {
         }catch(Exception e){
             num1=0.0;
             includePre=true;
-            //e.printStackTrace();
         }
         Double num2 = Double.valueOf(Calculator.cal(parameters[1]));
         Double result = num1-num2;
         String output = nf.format(result);
-        if(includePre)output=parameters[0]+output;
+        if(includePre){
+            output=parameters[0]+output;
+        }
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s-%s=%s", num1,num2,output));
         return output;
     }

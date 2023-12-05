@@ -1,4 +1,4 @@
-package MyCalculator.Entity;
+package mycalculator.entity;
 
 import java.awt.event.*;
 import java.awt.*;

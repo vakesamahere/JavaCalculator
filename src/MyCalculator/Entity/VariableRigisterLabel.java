@@ -1,10 +1,11 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.ComponentEditor;
+package mycalculator.entity;
 
 import javax.swing.*;
+
+import mycalculator.Lobby;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.ComponentEditor;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -117,23 +118,27 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
     }
     public void varMoveUp(RegistedVar va) {
         int pos = varList.indexOf(va);
-        if(pos==0)return;
+        if(pos==0){
+            return;
+        }
         varList.add(pos-1, va);
         varList.remove(pos+1);
         refreshVarDisplay();
     }
     public void varMoveDown(RegistedVar va) {
         int pos = varList.indexOf(va);
-        if(pos==varList.size()-1)return;
+        if(pos==varList.size()-1){
+            return;
+        }
         varList.add(pos+2, va);
         varList.remove(pos);
         refreshVarDisplay();
     }
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==register){//regist
+        if(e.getSource()==register){
             createNewVariable();
         }
-        if(e.getSource()==nameDisplayer){//regist
+        if(e.getSource()==nameDisplayer){
             clearList();
         }
     }

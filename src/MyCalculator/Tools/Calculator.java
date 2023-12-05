@@ -1,15 +1,16 @@
-package MyCalculator.Tools;
-
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Entity.ProgressBar;
-import MyCalculator.Entity.Variable;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operators.*;
+package mycalculator.tools;
 
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.regex.*;
+
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.entity.ProgressBar;
+import mycalculator.entity.Variable;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operators.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,16 +23,19 @@ public class Calculator {
         //variables
         remainVar=true;
         execute=false;
-        while(remainVar){//留存变量
+        //留存变量
+        while(remainVar){
             execute=false;
             remainVar=false;
             expString=dealOperator(expString);
             expString=Lobby.getConstVarMgr().replaceVars(expString);
             expString=dealOperator(expString);
-            if(!execute)break;
+            if(!execute){
+                break;
+            }
         }
-
-        expString = expString.substring(1,expString.length()-2);//)->)' '
+        //)->)' '
+        expString = expString.substring(1,expString.length()-2);
         Lobby.getLogDisplayer().addLog("\n********\n"+expString+"\n********\n");
 
         return expString;
@@ -87,7 +91,6 @@ public class Calculator {
             xs.add(x);
             String tempString=expString.replaceAll("&",nf.format(x));
             ys.add(Double.parseDouble(cal(tempString)));
-            //System.err.println(String.format("%s %s", temp[0],temp[1]));
             x+=unit;
         }
         outputs[0]=xs;
@@ -96,14 +99,14 @@ public class Calculator {
         //******************************************************
         return outputs;
     }
-    public static String cal(String expString){//预处理后进行单次运算
-        //System.err.println("\nCAL:"+expString);
+    /**预处理后进行单次运算*/
+    public static String cal(String expString){
         Expression expression = new Expression();
         boolean flag = getOperator(expString,expression);
         if (flag) {
             Lobby.getLogDisplayer().addLog(String.format("\nCAL:%s {%s} %s", expression.prefix,expression.pending,expression.suffix).replace(" ", ""));
             Lobby.getLogDisplayer().addLog(String.format("With operator:%s",expression.opPat));
-            return cal(String.format("%s%s%s", expression.prefix,expression.o.solve(),expression.suffix));//solve:operator(cal(string1),cal(string2))
+            return cal(String.format("%s%s%s", expression.prefix,expression.o.solve(),expression.suffix));
         }
         else{//纯数字
             expString=expString.replaceAll(" ", "");
@@ -115,24 +118,20 @@ public class Calculator {
         for(int i=0;i<Operator.operators.size();i++){
             Matcher matcher = Operator.patterns.get(i).matcher(expString);
             if(matcher.find()){
-                //System.out.println("Found AN operator:" + matcher.group());
             }else{
-                //System.out.println("Found no operator..");
                 continue;
             }
             //found an operator
             String opPattern=matcher.group();
             opPattern=opPattern.substring(1,opPattern.length()-1);
             expression.opPat=opPattern;
-            //System.err.println(opPattern);
             int posInList = Operator.patternStrings.get(i).indexOf(opPattern);
             String className=Operator.operators.get(i).get(posInList);
             int pos = matcher.start()+1;
             try{
-                Class<?> op=Class.forName(Operator.operatorPath+className);//getClass
-                //System.out.println("loading..");
-                Method method = op.getDeclaredMethod("loadSelf", String.class,Expression.class,int.class);//getMethod
-                method.invoke(null,expString,expression,pos);//run
+                Class<?> op=Class.forName(Operator.operatorPath+className);
+                Method method = op.getDeclaredMethod("loadSelf", String.class,Expression.class,int.class);
+                method.invoke(null,expString,expression,pos);
             }catch(Exception e){
                 e.printStackTrace();
                 continue;
@@ -150,18 +149,19 @@ public class Calculator {
         regex=String.format("([^A-za-z0-9])%s([^A-za-z0-9])", regex);
         Pattern pat = Pattern.compile(regex);
         Matcher mat = pat.matcher(expString);
-        if(mat.matches())remainVar=true;
+        if(mat.matches()){
+            remainVar=true;
+        }
         String replaced = va.getValue();
         //do it twice to avoid (given x=1 and x+x+x+x->1+x+1+x)
         expString=mat.replaceAll(String.format("%s%s%s","$1",replaced,"$2"));
-        //Lobby.getLogDisplayer().addLog(String.format("Replacement Completed:",expString));
         mat = pat.matcher(expString);
         expString=mat.replaceAll(String.format("%s%s%s","$1",replaced,"$2"));
-        //Lobby.getLogDisplayer().addLog(String.format("Replacement Completed:",expString));
         return expString;
 
     }
-    public static void analysis(//获得数据
+    /**获得数据*/
+    public static void analysis(
         List<Double> xs,
         List<Double> ys,
 
@@ -218,18 +218,23 @@ public class Calculator {
                 rootsX.add(xs.get(pos));
                 rootFounded=true;
             }
-            if(lUp^rUp){//extreme value
-                if(lUp){//极大值
+            //extreme value
+            if(lUp^rUp){
+                //极大值
+                if(lUp){
                     maxsY.add(self);
                     maxsX.add(xs.get(pos));
-                    if(self>max){//最大值
+                    //最大值
+                    if(self>max){
                         max=self;
                         posMax=pos;
                     }
-                }else{//极小值
+                    //极小值
+                }else{
                     minsY.add(self);
                     minsX.add(xs.get(pos));
-                    if(self<min){//最小值
+                    //最小值
+                    if(self<min){
                         min=self;
                         posMin=pos;
                     }
@@ -237,7 +242,11 @@ public class Calculator {
                 extsY.add(self);
                 extsX.add(xs.get(pos));
                 int extSize = extsY.size();
-                if(extSize<=1)rootFounded=false;else if (((self>=0)^(extsY.get(extSize-2)>=0)))rootFounded=false;
+                if(extSize<=1){
+                    rootFounded=false;
+                }else if (((self>=0)^(extsY.get(extSize-2)>=0))){
+                    rootFounded=false;
+                }
             }
         }
         mostsY.add(max);

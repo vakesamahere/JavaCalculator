@@ -1,7 +1,7 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Covariance extends Operator {
     public final static String pattern = "cov";
     public final static boolean bracketlike=true;
@@ -11,7 +11,6 @@ public class Covariance extends Operator {
     public Covariance(){
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         String inputX = Calculator.cal(parameters[0]);
         String inputY = Calculator.cal(parameters[1]);
         String[] arrayX = Operator.stringToArray(inputX);
@@ -27,8 +26,6 @@ public class Covariance extends Operator {
         }
         sum/=arrayX.length;
         String output = nf.format(sum);
-        //Lobby.getCovarianceDisplayer().addCovariance(String.format("[Output]Covariance(%s,%s)=%s", num1,num2,output));
-        
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

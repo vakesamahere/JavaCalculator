@@ -1,9 +1,10 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
 import java.util.ArrayList;
 import java.util.List;
+
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class MatrixJointCol extends Operator {
     public final static String pattern = "jc";
     public final static boolean bracketlike=true;
@@ -15,19 +16,23 @@ public class MatrixJointCol extends Operator {
         parameters = new String[maxSize];
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         List<String[]> temp = new ArrayList<>();
         for(int i=0;i<maxSize;i++){
-            if(parameters[i]==null)break;
+            if(parameters[i]==null){
+                break;
+            }
             String[] array = stringToArray(Calculator.cal(parameters[i]));
             String[][] matrix = arrayToMatrix(array);
-            for(String[] arr:matrix)temp.add(arr);
+            for(String[] arr:matrix){
+                temp.add(arr);
+            }
         }
         String[][] result = new String[temp.size()][];
         int index=0;
-        for(String[] arr:temp)result[index++]=arr;
+        for(String[] arr:temp){
+            result[index++]=arr;
+        }
         String output = Operator.matrixToString(result);
-        //Lobby.getLogDisplayer().addLog(String.format("[Output]MatrixJointCol(%s)=%s", num,output));
         
         return output;
     }

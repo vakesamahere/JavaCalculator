@@ -1,9 +1,10 @@
-package MyCalculator.Entity;
-import MyCalculator.Lobby;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.ComponentEditor;
-
+package mycalculator.entity;
 import javax.swing.*;
+
+import mycalculator.Lobby;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.ComponentEditor;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -17,6 +18,7 @@ import java.util.concurrent.Future;
 
 public class CalculatorPanel extends JPanel implements ActionListener,ComponentListener{
     private static final Color buttonColor = new Color(233, 233, 233);
+    private GridBagConstraints gbc;
 
     private JTextField accuracyField;
     private JTextField diaNameField;
@@ -59,7 +61,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
     public CalculatorPanel(){//
         outputss= new ArrayList<>();
-
+        setLayout(new GridBagLayout());
+        gbc=new GridBagConstraints();
+        gbc.fill=GridBagConstraints.BOTH;
         accuracyField = new JTextField();
         diaNameField = new JTextField();
         rightLimitField = new JTextField();
@@ -83,8 +87,6 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
         solve.setBackground(buttonColor);
         table.setBackground(buttonColor);
-
-        setLayout(null);
         setBorder(BorderFactory.createLineBorder(Color.gray,1));
         setBackground(Color.lightGray);
 
@@ -102,6 +104,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             component.setBorder(BorderFactory.createLineBorder(Color.gray,1));
             component.setFont(Lobby.smallFormatFont);
         }
+        setLayout(null);
         ComponentEditor.initializeComponentBody(varExp.selfPanel,this,0.05,0.17,0.5,0.43);
         ComponentEditor.initializeComponentBody(varRes.selfPanel,this,0.05,0.72,0.5,0.22);
 
@@ -111,21 +114,24 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         ComponentEditor.initializeComponentBody(expressionLabel,this,0.05,0.08,0.3,0.1);
         ComponentEditor.initializeComponentBody(resultLabel,this,0.05,0.63,0.3,0.1);
         
-        ComponentEditor.initializeComponentBody(fromLabel,this,0.605,0.69,0.05,0.12);
+        ComponentEditor.initializeComponentBody(fromLabel,this,0.6,0.69,0.05,0.12);
         ComponentEditor.initializeComponentBody(leftLimitField,this,0.65,0.69,0.1,0.12);
-        ComponentEditor.initializeComponentBody(toLabel,this,0.605,0.82,0.05,0.12);
+        ComponentEditor.initializeComponentBody(toLabel,this,0.6,0.82,0.05,0.12);
         ComponentEditor.initializeComponentBody(rightLimitField,this,0.65,0.82,0.1,0.12);
 
-        ComponentEditor.initializeComponentBody(accuracyLabel,this,0.805,0.69,0.05,0.12);
+        ComponentEditor.initializeComponentBody(accuracyLabel,this,0.8,0.69,0.05,0.12);
         ComponentEditor.initializeComponentBody(accuracyField,this,0.85,0.69,0.1,0.12);
-        ComponentEditor.initializeComponentBody(varDiaNameLabel,this,0.805,0.82,0.05,0.12);
+        ComponentEditor.initializeComponentBody(varDiaNameLabel,this,0.8,0.82,0.05,0.12);
         ComponentEditor.initializeComponentBody(diaNameField,this,0.85,0.82,0.1,0.12);
+         //*/
     }
     public void calWork(){
         running=true;
         long stratTime = System.currentTimeMillis();
         String result = varExp.getSelected();
-        if(result.length()==0)result = varExp.getValueArea().getText();
+        if(result.length()==0){
+            result = varExp.getValueArea().getText();
+        }
         result = Calculator.calString(result);
         result = Calculator.cal(result);
         varRes.getValueArea().setText(result);
@@ -139,7 +145,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         running=true;
         long stratTime = System.currentTimeMillis();
         String input = varExp.getSelected();
-        if(input.length()==0)input = varExp.getValueArea().getText();
+        if(input.length()==0){
+            input = varExp.getValueArea().getText();
+        }
         String[] exps=input.split(";");
         Double start,end;
         int n;
@@ -151,14 +159,14 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         start = (left.length()==0)?-1.0:Double.parseDouble(left);
         end = (right.length()==0)?1.0:Double.parseDouble(right);
         n = (accu.length()==0)?1000:Integer.parseInt(accu);
-        if(varName.length()==0)varName="x";
-        //System.err.println(String.format("(%s) %s %s %s %s", expString,start,end,n,varName));
+        if(varName.length()==0){
+            varName="x";
+        }
         expStrings = new ArrayList<>();
         outputss = new ArrayList<>();
         //*****************************************************************************************
         for(String expString:exps){
             expStrings.add(expString);
-            //System.err.println(expString);
             expString = Calculator.calString(expString);
             List<Double>[] outputs = Calculator.listGen(expString,varName,start,end,n);
             outputss.add(outputs);
@@ -167,8 +175,8 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         //*****************************************************************************************
         //*****************************************************************************************
         String output="";
-        for(List<Double>[] outputs:outputss){//each expString and result
-            //System.err.println(outputs[1].toString());
+        //each expString and result
+        for(List<Double>[] outputs:outputss){
             Calculator.analysis(outputs[0], outputs[1], rootsX, maxsX, minsX, extsX, mostsX, rootsY, maxsY, minsY, extsY, mostsY);
             output+="\n>>>>>********************************<<<<<\nNew Data Analysis\n>>>>>********************************<<<<<\n";
             output+=String.format("*********Equation:\n%s=0\n", expStrings.get(outputss.indexOf(outputs)));
@@ -220,7 +228,6 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             futureCal.cancel(true);
             futureDia.cancel(true);
         }catch(Exception e){
-            //Lobby.getLogDisplayer().addLog("Interrupt");
         }
         running=false;
         Lobby.getProgressBar().setProgress(0.0);
@@ -236,11 +243,17 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     }
     @Override
     public void actionPerformed(ActionEvent e){
-        if(e.getSource()==solve){//calculate
-            if(!running)startCal();
+        //calculate
+        if(e.getSource()==solve){
+            if(!running){
+                startCal();
+            }
         }
-        if(e.getSource()==table){//table and diaplay scatter plots
-            if(!running)startTab();
+        //table and diaplay scatter plots
+        if(e.getSource()==table){
+            if(!running){
+                startTab();
+            }
         }
     }
     @Override

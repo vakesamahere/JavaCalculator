@@ -1,7 +1,7 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Variance extends Operator {
     public final static String pattern = "D";
     public final static boolean bracketlike=true;
@@ -10,7 +10,6 @@ public class Variance extends Operator {
     public Variance(){
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         String input = Calculator.cal(parameters[0]);
         String[] array = Operator.stringToArray(input);
         Double sum=0.0;
@@ -23,7 +22,6 @@ public class Variance extends Operator {
         }
         sum/=array.length;
         String output = nf.format(sum);
-        //Lobby.getLogDisplayer().addLog(String.format("[Output]Variance(%s)=%s", num,output));
         
         return output;
     }

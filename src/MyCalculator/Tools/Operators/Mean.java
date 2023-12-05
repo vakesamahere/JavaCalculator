@@ -1,7 +1,7 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Mean extends Operator {
     public final static String pattern = "E";
     public final static boolean bracketlike=true;
@@ -10,7 +10,6 @@ public class Mean extends Operator {
     public Mean(){
     }
     public String solve(){
-        //System.err.println("Solve:"+parameters[0]);
         String[] array = Operator.stringToArray(Calculator.cal(parameters[0]));
         Double sum=0.0;
         for(String num:array){
@@ -18,7 +17,6 @@ public class Mean extends Operator {
         }
         sum/=array.length;
         String output = nf.format(sum);
-        //Lobby.getLogDisplayer().addLog(String.format("[Output]Mean(%s)=%s", num,output));
         
         return output;
     }

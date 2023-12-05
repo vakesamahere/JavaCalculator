@@ -1,8 +1,8 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
+package mycalculator.entity;
 
 import javax.swing.JPanel;
+
+import mycalculator.Lobby;
 
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -34,7 +34,9 @@ public class LogDisplayer extends IndependentVar {
         return selfPanel;
     }
     public void addLog(String str){
-        if(highFreq>0)return;
+        if(highFreq>0){
+            return;
+        }
         valueText.setText(valueText.getText()+str+"\n");
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
     }
@@ -48,7 +50,9 @@ public class LogDisplayer extends IndependentVar {
         highFreq=0;
     }
     public void controlLength(){
-        if(Lobby.getCalculatorPanel().isRunning()==false)highFreq=0;
+        if(Lobby.getCalculatorPanel().isRunning()==false){
+            highFreq=0;
+        }
         System.err.println("Checking Length..");
         int length = valueText.getText().length();
         if(length>maxLength){

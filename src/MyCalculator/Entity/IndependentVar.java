@@ -1,11 +1,11 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.ComponentEditor;
+package mycalculator.entity;
 
 import java.awt.event.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+
+import mycalculator.Lobby;
+import mycalculator.tools.ComponentEditor;
 
 
 public class IndependentVar extends Variable implements ComponentListener,CaretListener {
@@ -15,7 +15,9 @@ public class IndependentVar extends Variable implements ComponentListener,CaretL
         super(str,true);
         selfPanel.addComponentListener(this);
         useFormatFont=isUseFormatFont;
-        if(useFormatFont)valueText.setFont(Lobby.formatFont);
+        if(useFormatFont){
+            valueText.setFont(Lobby.formatFont);
+        }
         valueText.addCaretListener(this);
     }
     public IndependentVar(String str){
@@ -34,7 +36,9 @@ public class IndependentVar extends Variable implements ComponentListener,CaretL
     }
     @Override
     public void componentResized(ComponentEvent e) {
-        if(e.getSource()==selfPanel)refreshComponents();
+        if(e.getSource()==selfPanel){
+            refreshComponents();
+        }
     }
     @Override
     public void componentMoved(ComponentEvent e) {
@@ -52,6 +56,8 @@ public class IndependentVar extends Variable implements ComponentListener,CaretL
             return;
         }
         String temp = valueText.getSelectedText();
-        if(temp.length()>0)selected=temp;
+        if(temp.length()>0){
+            selected=temp;
+        }
     }
 }

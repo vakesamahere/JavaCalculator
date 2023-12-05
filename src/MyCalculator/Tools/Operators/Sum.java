@@ -1,11 +1,11 @@
-package MyCalculator.Tools.Operators;
+package mycalculator.tools.Operators;
 
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Entity.ProgressBar;
-import MyCalculator.Entity.Variable;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.entity.ProgressBar;
+import mycalculator.entity.Variable;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 
 public class Sum extends Operator{
     public final static String pattern = "sum";
@@ -29,29 +29,25 @@ public class Sum extends Operator{
         Variable va = new Variable(x,false);
         va.setValue(varString);
         fx=Calculator.replaceVar(fx, va);
-        //System.err.println(String.format("Fx:%s;", fx));
 
         Double result=0.0;
         int startInt =Integer.parseInt(a);
         int endInt =Integer.parseInt(b);
         int time=Math.max(endInt-startInt+1, 0);
-        if(time==0)return "0";
+        if(time==0){
+            return "0";
+        }
 
-        //System.err.println("start..");
         Double unitIcre = 100.0/time;
         Double progress=0.0;
         ProgressBar bar = Lobby.getProgressBar();
         bar.setProgress(0.0);
-        //long stratTime = System.nanoTime();
         for(int i=startInt;i<=endInt;i++) {
             progress+=unitIcre;
-            bar.setProgress(progress);//cost less than 2%
+            //cost less than 2%
+            bar.setProgress(progress);
             result+=Double.parseDouble(Calculator.cal(fx.replace(varString, nf.format(i))));
-            //System.err.println(String.format("n=%d,i=%d,dx=%.4f,result=%.4f",n,i,dx,result)); cost 17.5% more
         }
-        //long endTime = System.nanoTime();  
-        //System.err.println(String.format("TimeCosted:%d",endTime-stratTime));
-        //System.err.println("Done!");
         
         String output=nf.format(result);
         return output;

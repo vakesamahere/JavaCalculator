@@ -1,8 +1,8 @@
-package MyCalculator.Tools.Operators;
-import MyCalculator.Lobby;
-import MyCalculator.Entity.Expression;
-import MyCalculator.Tools.Calculator;
-import MyCalculator.Tools.Operator;
+package mycalculator.tools.Operators;
+import mycalculator.Lobby;
+import mycalculator.entity.Expression;
+import mycalculator.tools.Calculator;
+import mycalculator.tools.Operator;
 public class Arctan extends Operator {
     public final static String pattern = "arctan";
     public final static boolean bracketlike=true;

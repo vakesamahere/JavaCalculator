@@ -1,6 +1,6 @@
-package MyCalculator.Entity;
+package mycalculator.entity;
 
-import MyCalculator.Tools.Operator;
+import mycalculator.tools.Operator;
 
 public class Expression {
     public String prefix;

@@ -1,26 +1,26 @@
-package MyCalculator;
-//主窗口
-import MyCalculator.Entity.*;
-import MyCalculator.Tools.ComponentEditor;
-import MyCalculator.Tools.Operator;
-
+package mycalculator;
 import javax.swing.*;
+
+import mycalculator.entity.*;
+import mycalculator.tools.ComponentEditor;
+import mycalculator.tools.Operator;
+
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class Lobby extends JFrame{
-    //settings
+    /**settings*/
     public static final double formSizeRatio = 0.75;
     private static int formatFontSize;
     private static int smallFormatFontSize;
     private static int signFontSize;
-    //
+    
     public static Font formatFont;
     public static Font signFont;
     public static Font boldSignFont;
     public static Font smallFormatFont;
-    //component
+    /**component*/
     public static Keyboard keyboard=new Keyboard();
 
     private static JPanel formPanel = new JPanel();
@@ -29,7 +29,7 @@ public class Lobby extends JFrame{
     
     private static LogDisplayer logDisplayer = new LogDisplayer("log");
     private static VariableRigisterLabel constVariablesManager;
-    //
+    
     public Lobby(String name){
         super(name);
         initialize();
@@ -44,7 +44,6 @@ public class Lobby extends JFrame{
     private void initialize(){
         this.calSrceenSize(formSizeRatio);
         loadFont();
-        //this.setResizable(false);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
     }

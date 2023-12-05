@@ -1,12 +1,12 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.ComponentEditor;
+package mycalculator.entity;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import javax.swing.*;
+
+import mycalculator.Lobby;
+import mycalculator.tools.ComponentEditor;
 
 
 public class RegistedVar extends Variable{

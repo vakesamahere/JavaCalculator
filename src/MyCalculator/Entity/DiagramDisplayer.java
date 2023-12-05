@@ -1,11 +1,12 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
+package mycalculator.entity;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+
+import mycalculator.Lobby;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
@@ -56,7 +57,9 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
     public void mouseMoved(MouseEvent e) {
         int pos=MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
         int index = drawPanel.calPosMouse(pos);
-        if(index<0||index>=drawPanel.arrayLen)return;
+        if(index<0||index>=drawPanel.arrayLen){
+            return;
+        }
         List<String> ys = new ArrayList<>();
         for(List<Double>[] inputs:inputss){
             ys.add(nf.format(inputs[1].get(index)));
@@ -76,8 +79,8 @@ class DrawPanel extends JPanel{
     Double ylimit=1.0;
     Double xRatio;
     Double yRatio;
-    int posXLeft;
-    int posXRight;
+    int posxLeft;
+    int posxRight;
     int posDelta;
     int arrayLen;
     int n=10;
@@ -97,10 +100,11 @@ class DrawPanel extends JPanel{
     public void paint(Graphics g){
         super.paint(g);
         Lobby.getCalculatorPanel().getDiagramDisplayer().refreshSize();
-        //System.out.println(String.format("(%s %s %s %s %s %s)", xRatio,yRatio,xlimit,ylimit,center.x,center.y));
         g.setColor(Color.BLACK);
-        g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);//axeX
-        g.drawLine(center.x,center.y-size.y/2, center.x, center.y+size.y/2);//axeY
+        //axeX
+        g.drawLine(center.x-size.x/2, center.y,center.x+size.x/2,center.y);
+        //axeY
+        g.drawLine(center.x,center.y-size.y/2, center.x, center.y+size.y/2);
         for(int i=0-tickCount;i<=tickCount;i++){
             g.drawString(nf.format(xlimit*i/tickCount), center.x+size.x*i/tickCount/2, center.y);
             g.drawString(nf.format(-ylimit*i/tickCount), center.x, center.y+size.y*i/tickCount/2);
@@ -112,7 +116,7 @@ class DrawPanel extends JPanel{
         
     }
     public int calPosMouse(int pos){
-        return (pos-posXLeft)*arrayLen/posDelta;
+        return (pos-posxLeft)*arrayLen/posDelta;
     }
     public void calSize(List<List<Double>[]> inputss) {
         pointss = new ArrayList<>();
@@ -124,14 +128,13 @@ class DrawPanel extends JPanel{
             int[] outxs = new int[len];
             int[] outys = new int[len];
             int i;
-            posXLeft=transferToPosX(xs.get(0));
+            posxLeft=transferToPosX(xs.get(0));
             for(i=0;i<len;i++){
                 outxs[i]=transferToPosX(xs.get(i));
                 outys[i]=transferToPosY(ys.get(i));
-                //System.err.println(String.format("[x,y][%s]%s %s>>>%s %s",i,xs[i],ys[i], outxs[i],outys[i]));
             }
-            posXRight=transferToPosX(xs.get(i-1));
-            posDelta=posXRight-posXLeft;
+            posxRight=transferToPosX(xs.get(i-1));
+            posDelta=posxRight-posxLeft;
             //drawPoints(getGraphics(), outxs, outys);
             List<int[]> temp = new ArrayList<>();
             temp.add(outxs);
@@ -145,9 +148,13 @@ class DrawPanel extends JPanel{
         for(List<Double>[] lis:inputss){
             int xsLen = lis[0].size();
             Double tempX=Math.abs(lis[0].get(0));
-            if((tempX)>maxX)maxX=tempX;
+            if((tempX)>maxX){
+                maxX=tempX;
+            }
             tempX=Math.abs(lis[0].get(xsLen-1));
-            if((tempX)>maxX)maxX=tempX;
+            if((tempX)>maxX){
+                maxX=tempX;
+            }
 
             for(Double x:lis[1]){
                 Double temp=Math.abs(x);
@@ -175,12 +182,10 @@ class DrawPanel extends JPanel{
     }
     public int transferToPosX(Double x){
         int res=(int)(xRatio*x+center.x);
-        //System.err.println(String.format("[x]%s*%s+%s=%s",xRatio,x,center.x,res));
         return res;
     }
     public int transferToPosY(Double y){
         int res = (int)(yRatio*y+center.y);
-        //System.err.println(String.format("[y]%s*%s+%s+%s",yRatio,y,center.y,res));
         return res;
     }
     public void line(Graphics g,Double xa,Double ya,Double xb,Double yb){
@@ -189,7 +194,6 @@ class DrawPanel extends JPanel{
     public void drawPoints(Graphics g,int[]xs,int[]ys){
         int len=xs.length;
         for(int i=0;i<len;i++){
-            //System.out.println(String.format("%s %s %s", xs[i],ys[i],r));
             g.fillOval(xs[i]-r/2,ys[i]-r/2,r,r);
         }
     }

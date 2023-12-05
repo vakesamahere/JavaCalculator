@@ -1,11 +1,12 @@
-package MyCalculator.Entity;
-
-import MyCalculator.Lobby;
-import MyCalculator.Tools.ComponentEditor;
+package mycalculator.entity;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import mycalculator.Lobby;
+import mycalculator.tools.ComponentEditor;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -30,7 +31,6 @@ public class ProgressBar extends JPanel implements ComponentListener,DocumentLis
         progressBarLabel.setHorizontalAlignment(SwingConstants.CENTER);
         progressBarLabel.setBorder(BorderFactory.createLineBorder(borderColor,2));
         add(progressBarPanel);
-        //add(progressBarLabel);
         progressBarLabel.setOpaque(false);
         refreshComponent();
         this.addComponentListener(this);
@@ -41,14 +41,10 @@ public class ProgressBar extends JPanel implements ComponentListener,DocumentLis
         for(int i=0;i<gridCount;i++){
             panel.add(new JPanel(), i);
         }
-        //int j=0;
         for(Component comp:panel.getComponents()){
             comp.setBackground(remainColor);
             JComponent jComp = (JComponent)comp;
-            //int x=panel.getWidth()/gridCount;
-            //ComponentEditor.initializeComponentBody(jComp, panel, x*j,0,x,comp.getHeight());
             jComp.setBorder(BorderFactory.createLineBorder(remainColor,1));
-            //j++;
         }
     }
     public void updateProgress(double pro) {
