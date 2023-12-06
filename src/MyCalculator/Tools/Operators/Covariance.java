@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -26,6 +27,7 @@ public class Covariance extends Operator {
         }
         sum/=arrayX.length;
         String output = nf.format(sum);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]Cov(%s,%s)=%s", inputX,inputY,output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

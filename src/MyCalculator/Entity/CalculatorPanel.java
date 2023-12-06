@@ -1,6 +1,7 @@
 package mycalculator.entity;
 import javax.swing.*;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.ComponentEditor;
@@ -84,6 +85,8 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
         solve.addActionListener(this);
         table.addActionListener(this);
+        solve.setFocusable(false);
+        table.setFocusable(false);
 
         solve.setBackground(buttonColor);
         table.setBackground(buttonColor);
@@ -92,6 +95,17 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
 
         this.addComponentListener(this);
         refreshComponent();
+        getHelp();
+    }
+    private void getHelp(){
+        Help.expArea=varExp.getValueArea();
+        Help.resArea=varRes.getValueArea();
+        Help.solveBut=solve;
+        Help.tableBut=table;
+        Help.fromField=leftLimitField;
+        Help.toField=rightLimitField;
+        Help.accuField=accuracyField;
+        Help.variField=diaNameField;
     }
     private void refreshComponent() {
         for(JComponent component:Arrays.asList(expressionLabel,resultLabel,leftLimitField,accuracyLabel,varDiaNameLabel,fromLabel,toLabel)){
@@ -149,6 +163,10 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             input = varExp.getValueArea().getText();
         }
         String[] exps=input.split(";");
+        if(exps.length==1&&exps[0].length()==0){
+            running=false;
+            return;
+        }
         Double start,end;
         int n;
         String 
@@ -240,6 +258,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     }
     public IndependentVar getVarRes(){
         return varRes;
+    }
+    public IndependentVar getVarExp(){
+        return varExp;
     }
     @Override
     public void actionPerformed(ActionEvent e){

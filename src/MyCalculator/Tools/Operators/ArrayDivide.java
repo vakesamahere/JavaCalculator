@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -18,6 +19,7 @@ public class ArrayDivide extends Operator {
             arrayRes[i]=Calculator.cal(String.format(" %s %s %s ",Calculator.cal(arr[i]),Divide.pattern,Calculator.cal(parameters[1])));
         }
         String output = Operator.arrayToString(arrayRes);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s/%s=%s", arr,parameters[1],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

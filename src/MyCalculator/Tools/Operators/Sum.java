@@ -1,4 +1,4 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
 
 import mycalculator.Lobby;
 import mycalculator.entity.Expression;
@@ -14,7 +14,6 @@ public class Sum extends Operator{
     public final static boolean right = true;
     public final static int commaCount = 3;
     private final static String varString = "@";
-    //6parameters:min=4,max=4 [x,a,b,fx,d(=1)]
     public Sum(){
     }
 
@@ -50,6 +49,7 @@ public class Sum extends Operator{
         }
         
         String output=nf.format(result);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]Sum(%s,%s,%s,%s)=%s", parameters[0],parameters[1],parameters[2],parameters[3],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

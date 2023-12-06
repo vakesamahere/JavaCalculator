@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -20,6 +21,7 @@ public class MatrixTrans extends Operator {
             }
         }
         String output = matrixToString(result);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s^T", parameters[0],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

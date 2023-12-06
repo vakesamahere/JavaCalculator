@@ -1,4 +1,4 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
 import java.util.ArrayList;
 import java.util.List;
 

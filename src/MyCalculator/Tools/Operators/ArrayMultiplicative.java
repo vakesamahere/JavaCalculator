@@ -1,4 +1,4 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
 
 import mycalculator.Lobby;
 import mycalculator.entity.Expression;
@@ -45,6 +45,7 @@ public class ArrayMultiplicative extends Operator{
         }
         
         String output=nf.format(result);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]Mul(%s)of %s =%s", fx,arr,output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

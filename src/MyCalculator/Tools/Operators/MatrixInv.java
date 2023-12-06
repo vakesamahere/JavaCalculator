@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -45,6 +46,7 @@ public class MatrixInv extends Operator {
             System.arraycopy(matrix[i], n, resultMatrix[i], 0, n);
         }
         String output = Operator.matrixToString(resultMatrix);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s^-1", parameters[0],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

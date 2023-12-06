@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -22,6 +23,7 @@ public class Variance extends Operator {
         }
         sum/=array.length;
         String output = nf.format(sum);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]D(%s)=%s", parameters[0],output));
         
         return output;
     }

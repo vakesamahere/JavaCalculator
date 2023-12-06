@@ -1,4 +1,4 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;

@@ -38,6 +38,7 @@ public class Variable implements ActionListener{
         dialog=new ExpressionEditor(this);
 
         modifyButton.setBackground(buttonColor);
+        modifyButton.setFocusable(false);
         scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray,1));
 
         for(JComponent c:Arrays.asList(scrollPane,modifyButton)){

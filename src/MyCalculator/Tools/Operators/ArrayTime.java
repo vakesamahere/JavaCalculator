@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -39,6 +40,7 @@ public class ArrayTime extends Operator {
             }
         }
         String output = Operator.matrixToString(matrixRes);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s*%s=%s", parameters[0],parameters[1],output));
         return output;
     }
     /**数乘*/
@@ -50,6 +52,7 @@ public class ArrayTime extends Operator {
             arrayRes[i]=Calculator.cal(String.format(" %s %s %s ",Calculator.cal(num),Time.pattern,Calculator.cal(arr[i])));
         }
         String output = Operator.arrayToString(arrayRes);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s*%s=%s", array,num,output));
 
         return output;
     }

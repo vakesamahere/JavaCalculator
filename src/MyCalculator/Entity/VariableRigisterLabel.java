@@ -2,6 +2,7 @@ package mycalculator.entity;
 
 import javax.swing.*;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.ComponentEditor;
@@ -40,7 +41,14 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
 
         varScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         varScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        nameDisplayer.setFocusable(false);
+        register.setFocusable(false);
         refreshComponent();
+        getHelp();
+    }
+    private void getHelp(){
+        Help.clearVars=nameDisplayer;
+        Help.newVars=register;
     }
     public JPanel getVarPanel(){
         return variablesPanel;

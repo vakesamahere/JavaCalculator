@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -20,6 +21,7 @@ public class ArrayMinus extends Operator {
             arrayRes[i]=Calculator.cal(String.format(" %s(%s) %s %s(%s) ",Bracket.pattern,array1[i],Minus.pattern,Bracket.pattern,array2[i]));
         }
         String output = Operator.arrayToString(arrayRes);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s-%s=%s", array1,array2,output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

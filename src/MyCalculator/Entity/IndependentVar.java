@@ -4,6 +4,7 @@ import java.awt.event.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 import mycalculator.tools.ComponentEditor;
 
@@ -19,6 +20,7 @@ public class IndependentVar extends Variable implements ComponentListener,CaretL
             valueText.setFont(Lobby.formatFont);
         }
         valueText.addCaretListener(this);
+        Help.varModify.add(modifyButton);
     }
     public IndependentVar(String str){
         super(str,true);

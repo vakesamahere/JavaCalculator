@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -35,6 +36,7 @@ public class MatrixDet extends Operator {
             result*=matrix[i][i];
         }
         String output = nf.format(result);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]|%s|=%s", parameters[0],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

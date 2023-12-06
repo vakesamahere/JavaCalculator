@@ -2,6 +2,7 @@ package mycalculator.entity;
 
 import javax.swing.JPanel;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 
 import java.util.TimerTask;
@@ -29,6 +30,7 @@ public class LogDisplayer extends IndependentVar {
             }
         };
         scheduledExecutorService.scheduleAtFixedRate(run, 0, secondsExecuteClean,TimeUnit.SECONDS);
+        Help.logArea=valueText;
     }
     public JPanel getPanel(){
         return selfPanel;

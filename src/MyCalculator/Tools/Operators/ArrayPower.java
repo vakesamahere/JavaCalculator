@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Operator;
 
@@ -29,6 +30,7 @@ public class ArrayPower extends Operator {
             arraytime.setPa(1, parameters[0]);
             output=arraytime.solve();            
         }
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s^%s=%s", arr,times,output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

@@ -1,4 +1,5 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
+import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Calculator;
 import mycalculator.tools.Operator;
@@ -20,6 +21,7 @@ public class ArrayAdd extends Operator {
             arrayRes[i]=Calculator.cal(String.format(" %s(%s) %s %s(%s) ",Bracket.pattern,array1[i],Add.pattern,Bracket.pattern,array2[i]));
         }
         String output = Operator.arrayToString(arrayRes);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]%s+%s=%s", parameters[0],parameters[1],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

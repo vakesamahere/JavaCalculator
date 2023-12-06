@@ -28,6 +28,7 @@ public class Lobby extends JFrame{
     private static ProgressBar progressBar = new ProgressBar();
     
     private static LogDisplayer logDisplayer = new LogDisplayer("log");
+    private static JLabel help = new JLabel("HELP");
     private static VariableRigisterLabel constVariablesManager;
     
     public Lobby(String name){
@@ -62,14 +63,16 @@ public class Lobby extends JFrame{
         resRegVar.setName("RES");
         //
         refreshComponent();
+        Help.helpLabel=help;
     }
     private void refreshComponent(){
         loadFont();
         ComponentEditor.initializeComponentBody(progressBar, formPanel, 0,0.34,1,0.05);
         ComponentEditor.initializeComponentBody(calculatorPanel,formPanel,0,0,1,0.35);
         formPanel.setBounds(0,0,getSize().width,getSize().height);
-        ComponentEditor.initializeComponentBody(constVariablesManager, formPanel, 0,0.37,0.6,0.65);
-        ComponentEditor.initializeComponentBody(logDisplayer.getPanel(), formPanel, 0.6,0.37,0.4,0.65);
+        ComponentEditor.initializeComponentBody(constVariablesManager, formPanel, 0,0.39,0.6,0.52);
+        ComponentEditor.initializeComponentBody(logDisplayer.getPanel(), formPanel, 0.6,0.39,0.4,0.52);
+        ComponentEditor.initializeComponentBody(help, formPanel, 0,0.87,1,0.1);
         //stick
         progressBar.setLocation(new Point(0,calculatorPanel.getLocation().y+calculatorPanel.getSize().height));
         compStickUp(constVariablesManager,progressBar,0);
@@ -80,7 +83,8 @@ public class Lobby extends JFrame{
             self.getLocation().x,
             target.getLocation().y+target.getSize().height-1,
             self.getWidth(),
-            this.getSize().height-(target.getLocation().y+target.getSize().height-1+delta)
+            //this.getSize().height-(target.getLocation().y+target.getSize().height-1+delta)
+            self.getHeight()
         ));
     }
     private void loadFont(){
@@ -122,6 +126,7 @@ public class Lobby extends JFrame{
     public static void main(String[] args){
         Operator.generateArrays();
         Lobby lobby = new Lobby("❤CAL❤CU❤LA❤TOR❤");
+        Help.genReflact();
         lobby.setVisible(true);
     }
 }

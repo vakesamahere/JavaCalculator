@@ -9,7 +9,7 @@ import java.util.regex.*;
 import mycalculator.entity.Expression;
 
 public abstract class Operator {
-    public final static String operatorPath = "mycalculator.tools.Operators.";
+    public final static String operatorPath = "mycalculator.tools.operators.";
     public final static String nonOpRegex = "[^A-Za-z]";
     protected final static String pattrnFix = "&";
     public static List<List<String>> operators = Arrays.asList(

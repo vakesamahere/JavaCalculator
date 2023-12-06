@@ -1,4 +1,4 @@
-package mycalculator.tools.Operators;
+package mycalculator.tools.operators;
 
 import mycalculator.Lobby;
 import mycalculator.entity.Expression;
@@ -50,6 +50,7 @@ public class Multiplicative extends Operator{
         }
         
         String output=nf.format(result);
+        Lobby.getLogDisplayer().addLog(String.format("[Output]Mul(%s,%s,%s,%s)=%s", parameters[0],parameters[1],parameters[2],parameters[3],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){

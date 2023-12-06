@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 import mycalculator.tools.ComponentEditor;
 
@@ -35,6 +36,7 @@ public class ProgressBar extends JPanel implements ComponentListener,DocumentLis
         refreshComponent();
         this.addComponentListener(this);
         this.addMouseListener(this);
+        Help.progressBar=progressBarLabel;
     }
     private void loadBarPanel(JPanel panel) {
         panel.setLayout(new GridLayout(1,gridCount));

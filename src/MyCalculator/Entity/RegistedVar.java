@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.Arrays;
 import javax.swing.*;
 
+import mycalculator.Help;
 import mycalculator.Lobby;
 import mycalculator.tools.ComponentEditor;
 
@@ -35,12 +36,26 @@ public class RegistedVar extends Variable{
         down.addActionListener(this);
         owner.getVarPanel().add(selfPanel);
 
+        nameText.setFocusable(false);
+        deleteButton.setFocusable(false);
+        up.setFocusable(false);
+        down.setFocusable(false);
+
         for(JButton bu:Arrays.asList(modifyButton,deleteButton,up,down)){
             bu.setBackground(buttonColor);
             bu.setBorder(BorderFactory.createLineBorder(Color.gray));
         }
 
         refreshComponent();
+        getHelp();
+    }
+    private void getHelp(){
+        Help.varName.add(nameText);
+        Help.varValue.add(valueText);
+        Help.varDelete.add(deleteButton);
+        Help.varModify.add(modifyButton);
+        Help.varUp.add(up);
+        Help.varDown.add(down);
     }
     public void refreshComponent(){
         for(JComponent c:Arrays.asList(nameText,deleteButton,up,down)){

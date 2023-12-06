@@ -9,7 +9,7 @@ import mycalculator.entity.Expression;
 import mycalculator.entity.ProgressBar;
 import mycalculator.entity.Variable;
 import mycalculator.tools.Calculator;
-import mycalculator.tools.Operators.*;
+import mycalculator.tools.operators.*;
 
 import java.util.List;
 import java.util.ArrayList;
