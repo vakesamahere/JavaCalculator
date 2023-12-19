@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ComponentEditor {
+    private static GridBagConstraints gbc = new GridBagConstraints();
     public static void initializeComponentBody(JComponent self,JComponent father,double posX,double posY,double sizeX,double sizeY){//set the relative position and the relative size to the container
         
         if(self.getParent()==null||!self.getParent().equals(father))father.add(self);
@@ -15,7 +16,8 @@ public class ComponentEditor {
     public static void refreshBar(JScrollBar bar){
         bar.revalidate();
     }
-    public static void gbcAdd(Component c,int x,int y,int w,int h,int wx,int wy,GridBagConstraints gbc,Component co){
+    public static void gbcAdd(Component c,int x,int y,int w,int h,int wx,int wy,Component co){
+        gbc.fill=GridBagConstraints.BOTH;
         gbc.gridx=x;
         gbc.gridy=y;
         gbc.gridwidth=w;

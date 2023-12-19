@@ -8,7 +8,4 @@ public class Expression {
     public String pending;
     public String opPat;
     public Operator o;
-    public int level;
-    public Expression(){
-    }
 }

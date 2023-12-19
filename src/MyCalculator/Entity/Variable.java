@@ -6,16 +6,25 @@ import java.util.Arrays;
 import javax.swing.*;
 
 import mycalculator.Lobby;
+import mycalculator.tools.DocHistoryRecorder;
 
-public class Variable implements ActionListener{
-    protected static final Color buttonColor = new Color(255, 255, 255);
+public class Variable {
+    public static final Color buttonColor = new Color(255, 255, 255);
     protected JPanel selfPanel;
     protected JTextArea valueText;
     protected JButton modifyButton;
     protected JScrollPane scrollPane;
-    protected ExpressionEditor dialog;
     protected String name;
     protected String value="";
+    protected DocHistoryRecorder dhr;
+    protected ActionListener modifyAl = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if(e.getSource()==modifyButton){
+                select();
+            }
+        }
+    };
     public Variable(){
         initialize();
     }
@@ -35,7 +44,6 @@ public class Variable implements ActionListener{
         modifyButton=new JButton("...");
         valueText=new JTextArea();
         scrollPane=new JScrollPane(valueText);
-        dialog=new ExpressionEditor(this);
 
         modifyButton.setBackground(buttonColor);
         modifyButton.setFocusable(false);
@@ -51,9 +59,21 @@ public class Variable implements ActionListener{
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        modifyButton.addActionListener(this);
+        modifyButton.addActionListener(modifyAl);
+
+        dhr = new DocHistoryRecorder(valueText);
     }
-    
+    public void select(){
+        Lobby.getExpressionEditor().selectDhr(dhr);
+        Lobby.getExpressionEditor().setTarget(valueText);
+        Lobby.getExpressionEditor().setDoc(valueText.getDocument());
+        Lobby.getExpressionEditor().getTextArea().requestFocus();
+        Lobby.getExpressionEditor().getTextArea().setCaretPosition(valueText.getCaretPosition());
+        Lobby.getExpressionEditor().setSelectedButton(modifyButton);
+    }
+    public DocHistoryRecorder getRecorder(){
+        return dhr;
+    }
     public String getName(){
         return name;
     }
@@ -65,11 +85,5 @@ public class Variable implements ActionListener{
     }
     public void setValue(String str){
         value=str;
-    }
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource()==modifyButton){
-            dialog.setVisible(true);
-            dialog.focusGained(null);
-        }
     }
 }

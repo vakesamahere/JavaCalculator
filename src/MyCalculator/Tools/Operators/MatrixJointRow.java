@@ -17,8 +17,8 @@ public class MatrixJointRow extends Operator {
     }
     public String solve(){
         int len=0;
-        String[] array0 = stringToArray(Calculator.cal(parameters[0]));
-        String[][] matrix0 = arrayToMatrix(array0);
+        String[] array0 = Calculator.stringToArray(Calculator.cal(parameters[0]));
+        String[][] matrix0 = Calculator.arrayToMatrix(array0);
         len+=matrix0[0].length;
         List<String>[] temp = new List[matrix0.length];
         for(int i=0;i<matrix0.length;i++){
@@ -31,8 +31,8 @@ public class MatrixJointRow extends Operator {
             if(parameters[i]==null){
                 break;
             }
-            String[] array = stringToArray(Calculator.cal(parameters[i]));
-            String[][] matrix = arrayToMatrix(array);
+            String[] array = Calculator.stringToArray(Calculator.cal(parameters[i]));
+            String[][] matrix = Calculator.arrayToMatrix(array);
             len+=matrix[0].length;
             for(int k=0;k<matrix.length;k++){
                 for(String item:matrix[k]){
@@ -46,13 +46,13 @@ public class MatrixJointRow extends Operator {
                 result[i][j]=temp[i].get(j);
             }
         }
-        String output = Operator.matrixToString(result);
+        String output = Calculator.matrixToString(result);
         
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new MatrixJointRow();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
 }

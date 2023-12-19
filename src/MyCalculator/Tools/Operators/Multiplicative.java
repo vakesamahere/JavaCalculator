@@ -56,7 +56,7 @@ public class Multiplicative extends Operator{
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Multiplicative();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
     
 }

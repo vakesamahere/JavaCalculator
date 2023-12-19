@@ -17,9 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class CalculatorPanel extends JPanel implements ActionListener,ComponentListener{
+public class CalculatorPanel extends JPanel{
     private static final Color buttonColor = new Color(233, 233, 233);
-    private GridBagConstraints gbc;
 
     private JTextField accuracyField;
     private JTextField diaNameField;
@@ -59,12 +58,10 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     private ExecutorService executorDia;
     private Future<String> futureCal;
     private Future<String> futureDia;
-
+    /*构造函数 */
     public CalculatorPanel(){//
         outputss= new ArrayList<>();
-        setLayout(new GridBagLayout());
-        gbc=new GridBagConstraints();
-        gbc.fill=GridBagConstraints.BOTH;
+        setLayout(null);
         accuracyField = new JTextField();
         diaNameField = new JTextField();
         rightLimitField = new JTextField();
@@ -80,11 +77,25 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         varExp = new IndependentVar("Expression",true);
         varRes = new IndependentVar("Result",true);
         diagramDisplayer=new DiagramDisplayer();
-
+        /*默认值 */
         varRes.getValueArea().setText("0");
 
-        solve.addActionListener(this);
-        table.addActionListener(this);
+        solve.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                if(!running){
+                    startCal();
+                }
+            }
+        });
+        table.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                if(!running){
+                    startTab();
+                }
+            }
+        });
         solve.setFocusable(false);
         table.setFocusable(false);
 
@@ -93,7 +104,11 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         setBorder(BorderFactory.createLineBorder(Color.gray,1));
         setBackground(Color.lightGray);
 
-        this.addComponentListener(this);
+        addComponentListener(new ComponentAdapter(){
+            public void componentResized(ComponentEvent e) {
+                refreshComponent();
+            }
+        });
         refreshComponent();
         getHelp();
     }
@@ -108,7 +123,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         Help.variField=diaNameField;
     }
     private void refreshComponent() {
-        for(JComponent component:Arrays.asList(expressionLabel,resultLabel,leftLimitField,accuracyLabel,varDiaNameLabel,fromLabel,toLabel)){
+        for(JComponent component:Arrays.asList(expressionLabel,resultLabel)){
             component.setFont(Lobby.signFont);
         }
         for(JComponent component:Arrays.asList(solve,table)){
@@ -118,7 +133,9 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
             component.setBorder(BorderFactory.createLineBorder(Color.gray,1));
             component.setFont(Lobby.smallFormatFont);
         }
-        setLayout(null);
+        for(JComponent component:Arrays.asList(accuracyLabel,varDiaNameLabel,fromLabel,toLabel)){
+            component.setFont(Lobby.smallFormatFont);
+        }
         ComponentEditor.initializeComponentBody(varExp.selfPanel,this,0.05,0.17,0.5,0.43);
         ComponentEditor.initializeComponentBody(varRes.selfPanel,this,0.05,0.72,0.5,0.22);
 
@@ -139,6 +156,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
         ComponentEditor.initializeComponentBody(diaNameField,this,0.85,0.82,0.1,0.12);
          //*/
     }
+    /*前台运算调度方法 */
     public void calWork(){
         running=true;
         long stratTime = System.currentTimeMillis();
@@ -253,6 +271,7 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     public boolean isRunning(){
         return running;
     }
+    /*get & set */
     public DiagramDisplayer getDiagramDisplayer(){
         return diagramDisplayer;
     }
@@ -261,34 +280,6 @@ public class CalculatorPanel extends JPanel implements ActionListener,ComponentL
     }
     public IndependentVar getVarExp(){
         return varExp;
-    }
-    @Override
-    public void actionPerformed(ActionEvent e){
-        //calculate
-        if(e.getSource()==solve){
-            if(!running){
-                startCal();
-            }
-        }
-        //table and diaplay scatter plots
-        if(e.getSource()==table){
-            if(!running){
-                startTab();
-            }
-        }
-    }
-    @Override
-    public void componentResized(ComponentEvent e) {
-        refreshComponent();
-    }
-    @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-    }
-    @Override
-    public void componentHidden(ComponentEvent e) {
     }
 }
 class CalCallable implements Callable<String> {

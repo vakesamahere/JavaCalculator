@@ -2,8 +2,8 @@ package mycalculator;
 import javax.swing.*;
 
 import mycalculator.entity.*;
+import mycalculator.tools.Calculator;
 import mycalculator.tools.ComponentEditor;
-import mycalculator.tools.Operator;
 
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -21,9 +21,10 @@ public class Lobby extends JFrame{
     public static Font boldSignFont;
     public static Font smallFormatFont;
     /**component*/
-    public static Keyboard keyboard=new Keyboard();
-
+    private static ExpressionEditor expressionEditor = new ExpressionEditor();
+    private static KeyboardPanel keyboardPanel=new KeyboardPanel();
     private static JPanel formPanel = new JPanel();
+    private static JPanel mainPanel = new JPanel();
     private static CalculatorPanel calculatorPanel = new CalculatorPanel();
     private static ProgressBar progressBar = new ProgressBar();
     
@@ -35,6 +36,7 @@ public class Lobby extends JFrame{
         super(name);
         initialize();
         initializeComponent();
+        calculatorPanel.getVarExp().select();
         addComponentListener(new ComponentAdapter(){
             @Override
             public void componentResized(ComponentEvent e) {
@@ -49,15 +51,16 @@ public class Lobby extends JFrame{
         this.setLocationRelativeTo(null);
     }
     private void initializeComponent(){
-        //formPanel
+        //mainPanel
+        add(formPanel);
         formPanel.setLayout(null);
-        formPanel.setVisible(true);
-        this.add(formPanel);
+
         formPanel.setBounds(0,0,getSize().width,getSize().height);
-        //panels
-        ComponentEditor.initializeComponentBody(calculatorPanel,formPanel,0,0,1,0.35);
-        //constVariables,tempVariables
-        constVariablesManager= new VariableRigisterLabel("constVars", formPanel, 0,0.4,1,0.65);
+
+        mainPanel.setLayout(null);
+        mainPanel.setMinimumSize(new Dimension(1000,1000));
+
+        constVariablesManager= new VariableRigisterLabel("constVars", mainPanel, 0,0.4,1,0.65);
         //
         LinkVar resRegVar = new LinkVar(constVariablesManager, calculatorPanel.getVarRes().getValueArea(), "Result");
         resRegVar.setName("RES");
@@ -67,12 +70,18 @@ public class Lobby extends JFrame{
     }
     private void refreshComponent(){
         loadFont();
-        ComponentEditor.initializeComponentBody(progressBar, formPanel, 0,0.34,1,0.05);
-        ComponentEditor.initializeComponentBody(calculatorPanel,formPanel,0,0,1,0.35);
         formPanel.setBounds(0,0,getSize().width,getSize().height);
-        ComponentEditor.initializeComponentBody(constVariablesManager, formPanel, 0,0.39,0.6,0.52);
-        ComponentEditor.initializeComponentBody(logDisplayer.getPanel(), formPanel, 0.6,0.39,0.4,0.52);
-        ComponentEditor.initializeComponentBody(help, formPanel, 0,0.87,1,0.1);
+
+        ComponentEditor.initializeComponentBody(keyboardPanel, formPanel, 0, 0.35, 0.35, 0.575);
+        ComponentEditor.initializeComponentBody(expressionEditor, formPanel, 0, 0, 0.35, 0.35);
+        ComponentEditor.initializeComponentBody(mainPanel, formPanel, 0.35, 0, 0.65, 1);
+
+        ComponentEditor.initializeComponentBody(progressBar, mainPanel, 0,0.34,1,0.05);
+        ComponentEditor.initializeComponentBody(calculatorPanel,mainPanel,0,0,1,0.35);
+        
+        ComponentEditor.initializeComponentBody(constVariablesManager, mainPanel, 0,0.39,0.6,0.52);
+        ComponentEditor.initializeComponentBody(logDisplayer.getPanel(), mainPanel, 0.6,0.39,0.4,0.52);
+        ComponentEditor.initializeComponentBody(help, mainPanel, 0,0.88,1,0.1);
         //stick
         progressBar.setLocation(new Point(0,calculatorPanel.getLocation().y+calculatorPanel.getSize().height));
         compStickUp(constVariablesManager,progressBar,0);
@@ -83,7 +92,6 @@ public class Lobby extends JFrame{
             self.getLocation().x,
             target.getLocation().y+target.getSize().height-1,
             self.getWidth(),
-            //this.getSize().height-(target.getLocation().y+target.getSize().height-1+delta)
             self.getHeight()
         ));
     }
@@ -119,14 +127,18 @@ public class Lobby extends JFrame{
     public static LogDisplayer getLogDisplayer(){
         return logDisplayer;
     }
+    public static ExpressionEditor getExpressionEditor(){
+        return expressionEditor;
+    }
     public static void useKeyBoard(ExpressionEditor eed){
-        eed.setKeyboard(keyboard);
-        keyboard.setParent(eed);
+        //把keyboard的链接对象改为传入的表达式
+        
     }
     public static void main(String[] args){
-        Operator.generateArrays();
+        Calculator.generateArrays();
         Lobby lobby = new Lobby("❤CAL❤CU❤LA❤TOR❤");
         Help.genReflact();
+        Calculator.initializeNf();
         lobby.setVisible(true);
     }
 }

@@ -21,6 +21,6 @@ public class Ln extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Ln();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

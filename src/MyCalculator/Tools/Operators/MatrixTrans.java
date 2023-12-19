@@ -11,8 +11,8 @@ public class MatrixTrans extends Operator {
     public MatrixTrans(){
     }
     public String solve(){
-        String[] array = stringToArray(Calculator.cal(parameters[0]));
-        String[][] matrix = arrayToMatrix(array);
+        String[] array = Calculator.stringToArray(Calculator.cal(parameters[0]));
+        String[][] matrix = Calculator.arrayToMatrix(array);
         int m = matrix.length,n=matrix[0].length;
         String[][] result = new String[n][m];
         for(int i=0;i<m;i++){
@@ -20,13 +20,13 @@ public class MatrixTrans extends Operator {
                 result[j][i]=matrix[i][j];
             }
         }
-        String output = matrixToString(result);
+        String output = Calculator.matrixToString(result);
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s^T", parameters[0],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new MatrixTrans();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

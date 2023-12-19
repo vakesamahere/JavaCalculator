@@ -1,85 +1,108 @@
 package mycalculator.entity;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.*;
 import javax.swing.text.Document;
 
 import mycalculator.Lobby;
-import mycalculator.tools.HistoryRecorder;
+import mycalculator.tools.DocHistoryRecorder;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class ExpressionEditor extends JDialog implements DocumentListener,FocusListener,KeyListener,ComponentListener  {
-    private static final double formSizeRatio = 0.4;
-    private Keyboard keyboard;
-    private CaretListener caretListener;
+public class ExpressionEditor extends JPanel {
+    private KeyboardPanel keyboard;
     private int dot=0;
-    private boolean shifting=false;
     private boolean hotKeyLock=false;
     private boolean ctrlPressed=false;
-    private HistoryRecorder hr;
-    /**HistoryRecorder调用 用于判断判断软键盘输入*/
-    private boolean softKeyboardInput =false;
-
+    private JTextArea target;
     private JTextArea textArea;
     private JScrollPane scrollPane;
-    private Variable target;
     private Font font;
-    public ExpressionEditor(Variable va){
-        target = va;
-        calSrceenSize(formSizeRatio);
-        this.setLocationRelativeTo(null);
+    private DocHistoryRecorder dhr;
+    private JButton selectedButton;
+    public ExpressionEditor(){
+        setLayout(new GridLayout(1,1));
         textArea= new JTextArea();
         refreshFont();
         textArea.setLineWrap(true);
         scrollPane = new JScrollPane(textArea);
-        this.add(scrollPane);
+        add(scrollPane);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        Document doc = textArea.getDocument();
-        doc.addDocumentListener(this);
-        textArea.addFocusListener(this);
-        Lobby.useKeyBoard(this);
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e){
-                refreshFont();
-            }
-
-        });
-        setAlwaysOnTop(true);
-        this.addComponentListener(this);
-        caretListener = new CaretListener() {
+        textArea.addCaretListener(new CaretListener() {
             @Override
             public void caretUpdate(CaretEvent e) {
+                if(!textArea.isFocusOwner())return;
                 dot = e.getDot();
+                System.err.println(target.getText());
+                System.err.println(textArea.getText());
+                setTargetCaretPos(dot);
+                target.getCaret().setVisible(true);
             }
-        };
-        textArea.addCaretListener(caretListener);
-        textArea.addKeyListener(this);
-        
-        hr=new HistoryRecorder(textArea,va.getValueArea(),this);
+        });
+        textArea.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if(hotKeyLock||ctrlPressed||e.getKeyChar()=='('||e.getKeyChar()=='['){
+                    boolean match = keyboard.keyTyped(e.getKeyChar());
+                    if(match){
+                        e.consume();
+                    }
+                }
+                ctrlPressed=false;
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_CONTROL){
+                    ctrlPressed=!ctrlPressed;
+                }
+                if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_BACK_QUOTE){
+                    hotKeyLock=!hotKeyLock;
+                    ctrlPressed=false;
+                }
+
+                if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_Z){
+                    if(!e.isShiftDown()){
+                        getDocRecorder().undo();
+                    }else{
+                        getDocRecorder().redo();
+                    }
+                }
+                switch (e.getKeyChar()) {
+                    case KeyEvent.VK_TAB:{
+                        if(e.isShiftDown()){
+                            leftTab();
+                        }else{
+                            rightTab();
+                        }
+                        break;
+                    }
+                
+                    default:{
+                        return;
+                    }
+                }
+                e.consume();
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
     }
     public void refreshFont() {
-        double size=50*Math.min(getHeight(),getWidth())/540;
+        double size=15*Math.min(getToolkit().getScreenSize().height,getToolkit().getScreenSize().width)/540;
         font = new Font("Microsoft Yahei", Font.PLAIN, (int)size);
         textArea.setFont(font);
     }
-    public void calSrceenSize(double ratio){
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int)(ratio*screenSize.getWidth());
-        int height = (int)(ratio*screenSize.getHeight());
-        this.setSize(width,height);
-    }
-    public void setKeyboard(Keyboard k){
-        keyboard = k;
-    }
     public JTextArea getTextArea(){
         return textArea;
+    }
+    public JTextArea getTarget(){
+        return target;
+    }
+    public void setTargetCaretPos(int pos){
+        target.setCaretPosition(pos);
     }
     public void setDot(){
         textArea.setCaretPosition(dot);
@@ -87,14 +110,26 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
     public int getDot(){
         return dot;
     }
-    public HistoryRecorder getHr(){
-        return hr;
+    public void setSelectedButton(JButton button){
+        if(selectedButton!=null){
+            selectedButton.setEnabled(true);
+            selectedButton.setBackground(Variable.buttonColor);
+        }
+        selectedButton=button;
+        button.setEnabled(false);
+        button.setBackground(Color.lightGray);
     }
-    public void setSoftKeyInput(boolean value){
-        softKeyboardInput=value;
+    public void setTarget(JTextArea target){
+        this.target=target;
     }
-    public boolean getSoftKeyInput(){
-        return softKeyboardInput;
+    public void setKeyboard(KeyboardPanel kp){
+        keyboard=kp;
+    }
+    public DocHistoryRecorder getDocRecorder(){
+        return dhr;
+    }
+    public void selectDhr(DocHistoryRecorder d){
+        dhr = d;
     }
     public void rightTab() {
         String str=classfication(textArea.getText());
@@ -152,91 +187,8 @@ public class ExpressionEditor extends JDialog implements DocumentListener,FocusL
             .replaceAll("[^0]", "1");
         
 
-        }
-    @Override
-    public void insertUpdate(DocumentEvent e) {output();}
-    @Override
-    public void removeUpdate(DocumentEvent e) {output();}
-    @Override
-    public void changedUpdate(DocumentEvent e) {output();}
-    public void output(){
-        target.getValueArea().setText(textArea.getText());
     }
-    @Override
-    public void focusGained(FocusEvent e) {
-        Lobby.useKeyBoard(this);
-        textArea.setText(target.getValueArea().getText());
-        textArea.setForeground(Color.BLACK);
-        this.setTitle("Input the value of "+target.getName());
-        textArea.setCaretPosition(dot);
-    }
-    @Override
-    public void focusLost(FocusEvent e) {
-        textArea.getCaret().setVisible(true);
-        if(keyboard.isFocused()){
-            return;
-        }
-        textArea.setForeground(Color.WHITE);
-    }
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if(hotKeyLock||ctrlPressed||e.getKeyChar()=='('||e.getKeyChar()=='['){
-            boolean match = keyboard.keyTyped(e.getKeyChar());
-            if(match){
-                e.consume();
-                softKeyboardInput=true;
-            }
-        }
-        ctrlPressed=false;
-    }
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode()==KeyEvent.VK_SHIFT){
-            shifting=true;
-        }
-        if(e.getKeyCode()==KeyEvent.VK_CONTROL){
-            ctrlPressed=!ctrlPressed;
-        }
-        if(e.isControlDown()&&e.getKeyCode()==KeyEvent.VK_BACK_QUOTE){
-            hotKeyLock=!hotKeyLock;
-            ctrlPressed=false;
-        }
-
-        switch (e.getKeyChar()) {
-            case KeyEvent.VK_TAB:{
-                if(shifting){
-                    leftTab();
-                }else{
-                    rightTab();
-                }
-                break;
-            }
-        
-            default:{
-                return;
-            }
-        }
-        e.consume();
-    }
-    @Override
-    public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode()==KeyEvent.VK_SHIFT){
-            shifting=false;
-        }
-        
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-        Lobby.useKeyBoard(this);
-        keyboard.setVisible(true);
-    }
-    public void componentHidden(ComponentEvent e) {
-        //keyboard.setVisible(false);
-    }
-    @Override
-    public void componentResized(ComponentEvent e) {
-    }
-    @Override
-    public void componentMoved(ComponentEvent e) {
+    public void setDoc(Document doc){
+        textArea.setDocument(doc);
     }
 }

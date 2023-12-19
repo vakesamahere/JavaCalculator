@@ -9,22 +9,40 @@ import mycalculator.Lobby;
 import mycalculator.tools.ComponentEditor;
 
 
-public class IndependentVar extends Variable implements ComponentListener,CaretListener {
+public class IndependentVar extends Variable {
     private boolean useFormatFont = false;
     private String selected="";
+    private ComponentAdapter ca = new ComponentAdapter(){
+        @Override
+        public void componentResized(ComponentEvent e) {
+            refreshComponents();
+        }
+    };
     public IndependentVar(String str,Boolean isUseFormatFont) {
         super(str,true);
-        selfPanel.addComponentListener(this);
+        selfPanel.addComponentListener(ca);
         useFormatFont=isUseFormatFont;
         if(useFormatFont){
             valueText.setFont(Lobby.formatFont);
         }
-        valueText.addCaretListener(this);
+        valueText.addCaretListener(new CaretListener() {
+            @Override
+            public void caretUpdate(CaretEvent e) {
+                if(e.getMark()==e.getDot()){
+                    selected="";
+                    return;
+                }
+                String temp = valueText.getSelectedText();
+                if(temp.length()>0){
+                    selected=temp;
+                }
+            }
+        });
         Help.varModify.add(modifyButton);
     }
     public IndependentVar(String str){
         super(str,true);
-        selfPanel.addComponentListener(this);
+        selfPanel.addComponentListener(ca);
     }
     public void refreshComponents() {
         valueText.setFont(useFormatFont?Lobby.formatFont:Lobby.smallFormatFont);
@@ -35,31 +53,5 @@ public class IndependentVar extends Variable implements ComponentListener,CaretL
         String temp = selected;
         selected="";
         return temp;
-    }
-    @Override
-    public void componentResized(ComponentEvent e) {
-        if(e.getSource()==selfPanel){
-            refreshComponents();
-        }
-    }
-    @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-    }
-    @Override
-    public void componentHidden(ComponentEvent e) {
-    }
-    @Override
-    public void caretUpdate(CaretEvent e) {
-        if(e.getMark()==e.getDot()){
-            selected="";
-            return;
-        }
-        String temp = valueText.getSelectedText();
-        if(temp.length()>0){
-            selected=temp;
-        }
     }
 }

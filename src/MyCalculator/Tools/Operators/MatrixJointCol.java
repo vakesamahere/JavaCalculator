@@ -21,8 +21,8 @@ public class MatrixJointCol extends Operator {
             if(parameters[i]==null){
                 break;
             }
-            String[] array = stringToArray(Calculator.cal(parameters[i]));
-            String[][] matrix = arrayToMatrix(array);
+            String[] array = Calculator.stringToArray(Calculator.cal(parameters[i]));
+            String[][] matrix = Calculator.arrayToMatrix(array);
             for(String[] arr:matrix){
                 temp.add(arr);
             }
@@ -32,13 +32,13 @@ public class MatrixJointCol extends Operator {
         for(String[] arr:temp){
             result[index++]=arr;
         }
-        String output = Operator.matrixToString(result);
+        String output = Calculator.matrixToString(result);
         
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new MatrixJointCol();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
 }

@@ -1,65 +1,49 @@
 package mycalculator.entity;
 
 import javax.swing.*;
+
+import mycalculator.Lobby;
+import mycalculator.tools.DocHistoryRecorder;
+
 import java.awt.*;
 import java.awt.event.*;
 
 import java.util.List;
 import java.util.ArrayList;
-public class Keyboard extends JDialog{
+public class KeyboardPanel extends JPanel{
     private static final Color buttonColor = new Color(240, 240, 240);
-    private static final int cols = 5;
+    private static final int cols = 8;
     private static final double ratio = 0.23;
-    private Font font1;
-    private Font font2;
-    private Key[] keys = new Key[100];
+    private Font font;
+    private KeyButton[] keys = new KeyButton[100];
     private List<Character> hotKeys = new ArrayList<>();
     private JTextArea output;
     private ExpressionEditor parent;
     private int index=0;
 
     private JPanel opPanel;
-    private JPanel numPanel;
-    public Keyboard(){
+    public KeyboardPanel(){
 
-        setTitle("KEYBOARD");
-        setLayout(new GridLayout(1,2));
-
+        setLayout(new GridLayout(1,1));
+        parent = Lobby.getExpressionEditor();
+        setParent(parent);
         //
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int bound = Math.max((int)(ratio*screenSize.getWidth()),(int)(ratio*screenSize.getHeight()))/5;
+    
+        font =new Font("Microsoft Yahei", Font.BOLD, bound/7);
         
-        font1 =new Font("Microsoft Yahei", Font.PLAIN, bound/2);
-        font2 =new Font("Microsoft Yahei", Font.BOLD, bound/7);
-        
-        //parent=eed;
         opPanel=new JPanel();
-        numPanel =new JPanel();
         add(opPanel);
-        add(numPanel);
         opPanel.setLayout(new GridLayout(0,cols));
-        numPanel.setLayout(new GridLayout(0,3));
-        opPanel.setFont(font2);
-        numPanel.setFont(font1);
+        opPanel.setFont(font);
         iniKeys();
         setSize(bound*(cols*2),bound*((index-1)/cols-3));
-        setResizable(false);
-        setAutoRequestFocus(false);
-
-        this.addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                output.setForeground(Color.BLACK);
-            }
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                output.setForeground(Color.WHITE);
-            }
-        });
     }
     public void setParent(ExpressionEditor eed){
         parent=eed;
         output=parent.getTextArea();
+        parent.setKeyboard(this);
     }
     public void iniKeys() {
         newKey("plus +", "+", ' ', 1,opPanel);
@@ -67,24 +51,40 @@ public class Keyboard extends JDialog{
         newKey("time x", "*", ' ', 1,opPanel);
         newKey("divide ÷", "/", ' ', 1,opPanel);
         newKey("power ^", "^", ' ', 1,opPanel);
+
+        newKey("1", "1", ' ', 1,opPanel);
+        newKey("2", "2", ' ', 1,opPanel);
+        newKey("3", "3", ' ', 1,opPanel);
         //
         newKey("array []", "[]", '[', 1,opPanel);
         newKey("bracket ()", "()", '(', 1,opPanel);
         newKey("abs", "abs()", '|', 4,opPanel);
         newKey("exp", "exp()", 'e', 4,opPanel);
         newKey("ln", "ln()", 'l', 3,opPanel);
+
+        newKey("4", "4", ' ', 1,opPanel);
+        newKey("5", "5", ' ', 1,opPanel);
+        newKey("6", "6", ' ', 1,opPanel);
         //
         newKey("∑ sum", "∑(,,,)", ';', 2,opPanel);
         newKey("∏ mul", "∏(,,,)", '\'', 2,opPanel);
         newKey("∫ inte", "∫(,,,)", 'I', 2,opPanel);
         newKey("arr∑ asum", "arr∑(,,,)", ':', 5,opPanel);
         newKey("arr∏ amul", "arr∏(,,,)", '"', 5,opPanel);
+
+        newKey("7", "7", ' ', 1,opPanel);
+        newKey("8", "8", ' ', 1,opPanel);
+        newKey("9", "9", ' ', 1,opPanel);
         //
         newKey("sin", "sin()", 's', 4,opPanel);
         newKey("cos", "cos()", 'c', 4,opPanel);
         newKey("tan", "tan()", 't', 4,opPanel);
         newKey("percent %", "%", ' ', 1,opPanel);
         newKey("comma ,", ",", ' ', 1,opPanel);
+        
+        newKey(".", ".", ' ', 1,opPanel);
+        newKey("0", "0", ' ', 1,opPanel);
+        newKey("-", "-", ' ', 1,opPanel);
         //
         newKey("arcsin", "arcsin()", 'S', 7,opPanel);
         newKey("arccos", "arccos()", 'C', 7,opPanel);
@@ -104,26 +104,22 @@ public class Keyboard extends JDialog{
         keys[index++]=new FunctionalKey("left <<",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                int pos = t.getCaretPosition();
+                int pos = output.getCaretPosition();
                 
                 if(pos>0){
-                    parent.getHr().sleep();
-                    t.setCaretPosition(pos-1);
-                    parent.getHr().wake();
+                    output.setCaretPosition(pos-1);
                 }
+                output.requestFocus();
             }
         });
         keys[index++]=new FunctionalKey("right >>",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                int pos = t.getCaretPosition();
-                if(pos<t.getText().length()){
-                    parent.getHr().sleep();
-                    t.setCaretPosition(pos+1);
-                    parent.getHr().wake();
+                int pos = output.getCaretPosition();
+                if(pos<output.getText().length()){
+                    output.setCaretPosition(pos+1);
                 }
+                output.requestFocus();
             }
         });
         
@@ -131,79 +127,62 @@ public class Keyboard extends JDialog{
         keys[index++]=new FunctionalKey("Backspace",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                int pos = t.getCaretPosition();
-                String text=t.getText();
+                int pos = output.getCaretPosition();
+                String text=output.getText();
                 if(pos>0){
-                    parent.getHr().sleep();
-                    t.setText(text.substring(0,pos-1)+text.substring(pos));
-                    parent.getHr().wake();
-                    t.setCaretPosition(pos-1);
+                    parent.getDocRecorder().softInput();
+                    output.setText(text.substring(0,pos-1)+text.substring(pos));
+                    parent.getDocRecorder().softInputEnd();
+                    output.setCaretPosition(pos-1);
+                    parent.getDocRecorder().addHistory(DocHistoryRecorder.EDO);
                 }
+                output.requestFocus();
             }
         });
         keys[index++]=new FunctionalKey("Undo",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                parent.getHr().undo();
-                int len= t.getText().length();
-                parent.getHr().sleep();
-                t.setCaretPosition(len);
-                parent.getHr().wake();
+                parent.getDocRecorder().undo();
+                output.requestFocus();
             }
         });
         keys[index++]=new FunctionalKey("Redo",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                parent.getHr().redo();
-                int len= t.getText().length();
-                parent.getHr().sleep();
-                t.setCaretPosition(len);
-                parent.getHr().wake();
+                parent.getDocRecorder().redo();
+                output.requestFocus();
             }
         });
         keys[index++]=new FunctionalKey("CE Clear",this,opPanel,buttonColor,new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JTextArea t = parent.getTextArea();
-                t.setText("");
-            }
-        });
-        keys[index++]=new FunctionalKey("[Switch]Top",this,opPanel,buttonColor,new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getOwner().setAlwaysOnTop(!getOwner().isAlwaysOnTop());
+                output.setText("");
+                output.requestFocus();
             }
         });
         //*************************************************************
-        newKey("1", "1", ' ', 1,numPanel);
-        newKey("2", "2", ' ', 1,numPanel);
-        newKey("3", "3", ' ', 1,numPanel);
-        newKey("4", "4", ' ', 1,numPanel);
-        newKey("5", "5", ' ', 1,numPanel);
-        newKey("6", "6", ' ', 1,numPanel);
-        newKey("7", "7", ' ', 1,numPanel);
-        newKey("8", "8", ' ', 1,numPanel);
-        newKey("9", "9", ' ', 1,numPanel);
-        newKey(".", ".", ' ', 1,numPanel);
-        newKey("0", "0", ' ', 1,numPanel);
-        newKey("-", "-", ' ', 1,numPanel);
 
         
     }
     public void newKey(String name,String va,char key,int cOffset,JPanel p){
-        keys[index]=new Key(name,va,key,cOffset,this,p,buttonColor);
+        keys[index]=new KeyButton(name,va,key,cOffset,this,p,buttonColor);
         hotKeys.add(key);
         index++;
     }
+    public void newAir(){
+        keys[index++]=new AirButton();
+    }
     public void addValue(String value,int offset) {
         int pos = output.getCaretPosition();
-        parent.getHr().sleep();
+        //添加值
+        parent.getDocRecorder().softInput();
         output.insert(value, pos);
-        parent.getHr().wake();
+        parent.getDocRecorder().softInputEnd();
+        //移动光标
         output.setCaretPosition(pos+offset);
+        Lobby.getExpressionEditor().setTargetCaretPos(pos+offset);
+        output.requestFocus();
+        parent.getDocRecorder().addHistory(DocHistoryRecorder.EDO);
     }
     public boolean keyTyped(char keyChar) {
         if(keyChar==' '){

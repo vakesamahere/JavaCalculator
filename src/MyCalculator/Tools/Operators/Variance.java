@@ -12,7 +12,7 @@ public class Variance extends Operator {
     }
     public String solve(){
         String input = Calculator.cal(parameters[0]);
-        String[] array = Operator.stringToArray(input);
+        String[] array = Calculator.stringToArray(input);
         Double sum=0.0;
         Double mean;
         Mean m = new Mean();
@@ -30,6 +30,6 @@ public class Variance extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Variance();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

@@ -13,19 +13,19 @@ public class ArrayMinus extends Operator {
     }
     public String solve(){
         //不接受数字，只接受向量
-        String[] array1 = Operator.stringToArray(parameters[0]);
-        String[] array2 = Operator.stringToArray(parameters[1]);
+        String[] array1 = Calculator.stringToArray(parameters[0]);
+        String[] array2 = Calculator.stringToArray(parameters[1]);
         int n=array1.length;
         String[] arrayRes = new String[n];
         for(int i=0;i<n;i++){
             arrayRes[i]=Calculator.cal(String.format(" %s(%s) %s %s(%s) ",Bracket.pattern,array1[i],Minus.pattern,Bracket.pattern,array2[i]));
         }
-        String output = Operator.arrayToString(arrayRes);
+        String output = Calculator.arrayToString(arrayRes);
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s-%s=%s", array1,array2,output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new ArrayMinus();
-        Operator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
     }
 }

@@ -14,8 +14,8 @@ public class Covariance extends Operator {
     public String solve(){
         String inputX = Calculator.cal(parameters[0]);
         String inputY = Calculator.cal(parameters[1]);
-        String[] arrayX = Operator.stringToArray(inputX);
-        String[] arrayY = Operator.stringToArray(inputY);
+        String[] arrayX = Calculator.stringToArray(inputX);
+        String[] arrayY = Calculator.stringToArray(inputY);
         Double meanX,meanY,sum=0.0;
         Mean m = new Mean();
         m.setPa(0, inputX);
@@ -33,6 +33,6 @@ public class Covariance extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Covariance();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
 }

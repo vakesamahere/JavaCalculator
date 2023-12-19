@@ -20,6 +20,6 @@ public class Percent extends Operator {
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new Percent();
-        Operator.loadSelfSingle(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfSingle(expString, expression,pattern,left,right,index);
     }
 }

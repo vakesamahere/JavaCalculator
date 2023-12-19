@@ -72,7 +72,7 @@ public class DefiniteIntegral extends Operator{
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new DefiniteIntegral();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
     
 }

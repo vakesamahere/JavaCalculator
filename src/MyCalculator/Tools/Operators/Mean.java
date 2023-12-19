@@ -11,7 +11,7 @@ public class Mean extends Operator {
     public Mean(){
     }
     public String solve(){
-        String[] array = Operator.stringToArray(Calculator.cal(parameters[0]));
+        String[] array = Calculator.stringToArray(Calculator.cal(parameters[0]));
         Double sum=0.0;
         for(String num:array){
             sum+=Double.parseDouble(Calculator.cal(num));
@@ -25,6 +25,6 @@ public class Mean extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Mean();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

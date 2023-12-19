@@ -21,6 +21,6 @@ public class Tan extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Tan();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

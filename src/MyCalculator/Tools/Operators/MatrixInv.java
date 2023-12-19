@@ -11,11 +11,11 @@ public class MatrixInv extends Operator {
     public MatrixInv(){
     }
     public String solve(){
-        String[] array = stringToArray(Calculator.cal(parameters[0]));
-        String[][] matrixStr = arrayToMatrix(array);
+        String[] array = Calculator.stringToArray(Calculator.cal(parameters[0]));
+        String[][] matrixStr = Calculator.arrayToMatrix(array);
         //方阵
         int n=matrixStr.length;
-        Double[][] matrixHalf = Operator.matrixToDoubles(matrixStr);
+        Double[][] matrixHalf = Calculator.matrixToDoubles(matrixStr);
         Double[][] matrix = new Double[n][2*n];
         for(int i=0;i<n;i++){
             System.arraycopy(matrixHalf[i], 0, matrix[i], 0, n);
@@ -27,31 +27,31 @@ public class MatrixInv extends Operator {
         for(int i=0;i<n;i++){
             for(int k=i;k<n;k++){
                 if(Math.abs(matrix[i][i])<Math.abs(matrix[k][i])){
-                    Operator.matrixRowSwap(matrix, i, k);
+                    Calculator.matrixRowSwap(matrix, i, k);
                 }
             }
             if(matrix[i][i]==0){
                 return "{ERROR:DET=0}";
             }
-            Operator.matrixRowMul(matrix, i, 1/matrix[i][i]);
+            Calculator.matrixRowMul(matrix, i, 1/matrix[i][i]);
             for(int k=0;k<n;k++){
                 if(k==i){
                     continue;
                 }
-                Operator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
+                Calculator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
             }
         }
         Double[][] resultMatrix = new Double[n][n];
         for(int i=0;i<n;i++){
             System.arraycopy(matrix[i], n, resultMatrix[i], 0, n);
         }
-        String output = Operator.matrixToString(resultMatrix);
+        String output = Calculator.matrixToString(resultMatrix);
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s^-1", parameters[0],output));
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new MatrixInv();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

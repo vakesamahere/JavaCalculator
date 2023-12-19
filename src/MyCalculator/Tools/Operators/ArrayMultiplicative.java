@@ -19,7 +19,7 @@ public class ArrayMultiplicative extends Operator{
 
     public String solve() {
         String x = parameters[0];
-        String[] arr = Operator.stringToArray(Calculator.cal(parameters[1]));
+        String[] arr = Calculator.stringToArray(Calculator.cal(parameters[1]));
         String fx = parameters[2];
 
         
@@ -51,7 +51,7 @@ public class ArrayMultiplicative extends Operator{
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new ArrayMultiplicative();
-        Operator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
+        Calculator.loadSelfCommaIncluded(expString, expression,pattern,commaCount,index+pattern.length());
     }
     
 }

@@ -11,23 +11,23 @@ public class MatrixDet extends Operator {
     public MatrixDet(){
     }
     public String solve(){
-        String[] array = stringToArray(Calculator.cal(parameters[0]));
-        String[][] matrixStr = arrayToMatrix(array);
+        String[] array = Calculator.stringToArray(Calculator.cal(parameters[0]));
+        String[][] matrixStr = Calculator.arrayToMatrix(array);
         //方阵
         int n=matrixStr.length;
-        Double[][] matrix = Operator.matrixToDoubles(matrixStr);
+        Double[][] matrix = Calculator.matrixToDoubles(matrixStr);
         //高斯
         for(int i=0;i<n;i++){
             for(int k=i;k<n;k++){
                 if(Math.abs(matrix[i][i])<Math.abs(matrix[k][i])){
-                    Operator.matrixRowSwap(matrix, i, k);
+                    Calculator.matrixRowSwap(matrix, i, k);
                 }
             }
             if(matrix[i][i]==0){
                 return "0";
             }
             for(int k=i+1;k<n;k++){
-                Operator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
+                Calculator.matrixRowAdd(matrix, i, k,-matrix[k][i]/matrix[i][i]);
             }
             System.err.println(String.format("%s", matrix[i][i]));
         }
@@ -42,6 +42,6 @@ public class MatrixDet extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new MatrixDet();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

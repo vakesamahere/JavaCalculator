@@ -23,6 +23,6 @@ public class Time extends Operator {
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new Time();
-        Operator.loadSelfSingle(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfSingle(expString, expression,pattern,left,right,index);
     }
 }

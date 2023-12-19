@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
 
-public class DiagramDisplayer extends JDialog implements MouseMotionListener{
+public class DiagramDisplayer extends JDialog {
     private static final double formSizeRatio = 0.3;
     private static final double panelSizeRatioX = 0.9;
     private static final double panelSizeRatioY = 0.7;
@@ -25,20 +25,25 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
 
     public DiagramDisplayer(){
         drawPanel=new DrawPanel();
-        this.setTitle(title);
-        this.setLayout(new GridLayout(1,1));
-        this.add(drawPanel);
+        setTitle(title);
+        setLayout(new GridLayout(1,1));
+        add(drawPanel);
         calSrceenSize(formSizeRatio);
-        this.addMouseMotionListener(this);
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouseMove();
+            }
+        });
     }
     public void calSrceenSize(double ratio){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int)(ratio*screenSize.getWidth());
         int height = (int)(ratio*screenSize.getHeight());
-        this.setSize(width,height);
+        setSize(width,height);
     }
     public void refreshSize(){
-        selfSize = this.getSize();
+        selfSize = getSize();
         drawPanel.center = new Point(selfSize.width/2,(int)(selfSize.height*0.45));
         selfSize = new Dimension((int)(selfSize.width*panelSizeRatioX),(int)(selfSize.height*panelSizeRatioY));
         drawPanel.size=new Point(selfSize.width,selfSize.height);
@@ -50,12 +55,8 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
     public void setInputss(List<List<Double>[]> li){
         inputss=li;
     }
-    @Override
-    public void mouseDragged(MouseEvent e) {
-    }
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        int pos=MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
+    private void mouseMove(){        
+        int pos=MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x;
         int index = drawPanel.calPosMouse(pos);
         if(index<0||index>=drawPanel.arrayLen){
             return;
@@ -67,7 +68,7 @@ public class DiagramDisplayer extends JDialog implements MouseMotionListener{
         String output="";
         output+=String.format("||x=%.4f||", inputss.get(0)[0].get(index));
         output+=String.format("y=%s", String.join("; ",ys));
-        this.setTitle(title+output);
+        setTitle(title+output);
     }
 }
 class DrawPanel extends JPanel{

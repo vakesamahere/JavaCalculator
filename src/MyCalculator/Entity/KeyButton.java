@@ -3,14 +3,18 @@ package mycalculator.entity;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
-public class Key extends JButton{
+public class KeyButton extends JButton{
     public final String value;
     public final char hotkey;
-    private Keyboard keyboard;
+    private KeyboardPanel keyboard;
     private int offset;
     private JLabel nameLabel;
     private JLabel keyLabel;
-    public Key(String name,String va,char key,int cOffset,Keyboard parent,JPanel container,Color backColor){
+    public KeyButton(){
+        value = "";
+        hotkey = ' ';
+    }
+    public KeyButton(String name,String va,char key,int cOffset,KeyboardPanel parent,JPanel container,Color backColor){
         container.add(this);
         setMargin(new Insets(0, 0, 0, 0));
         setBackground(backColor);
@@ -34,7 +38,7 @@ public class Key extends JButton{
         this.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                keyboard.addValue(value,offset);
+                click();
             }
         });
     }
@@ -46,5 +50,11 @@ public class Key extends JButton{
         output[0]=value.substring(0, offset);
         output[1]=value.substring(offset);
         return output;
+    }
+}
+class AirButton extends KeyButton{
+    public AirButton(){
+        super();
+        setEnabled(false);
     }
 }

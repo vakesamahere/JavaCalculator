@@ -29,14 +29,26 @@ public class RegistedVar extends Variable{
         up = new JButton("∧");
         down = new JButton("∨");
         nameText.setFont(Lobby.smallFormatFont);
-
-        nameText.addActionListener(this);
-        deleteButton.addActionListener(this);
-        up.addActionListener(this);
-        down.addActionListener(this);
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                delSelf();
+            }
+        });
+        up.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                upSelf();
+            }
+        });
+        down.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                downSelf();
+            }
+        });
         owner.getVarPanel().add(selfPanel);
 
-        nameText.setFocusable(false);
         deleteButton.setFocusable(false);
         up.setFocusable(false);
         down.setFocusable(false);
@@ -105,19 +117,14 @@ public class RegistedVar extends Variable{
         int pos = owner.varPos(this);
         selfPanel.setLocation(0,pos*(int)(owner.getBounds().height*heightRatio));
     }
-    
-    public void actionPerformed(ActionEvent e){
-        super.actionPerformed(e);
-        if(e.getSource()==deleteButton){
-            owner.delVar(this);
-            owner.repaint();
-        }
-        if(e.getSource()==up){
-            owner.varMoveUp(this);
-        }
-        if(e.getSource()==down){
-            owner.varMoveDown(this);
-        }
-        
+    public void delSelf(){
+        owner.delVar(this);
+        owner.repaint();
+    }
+    public void upSelf(){
+        owner.varMoveUp(this);
+    }
+    public void downSelf(){
+        owner.varMoveDown(this);
     }
 }

@@ -21,6 +21,6 @@ public class Exp extends Operator {
     public static void loadSelf(String expString,Expression expression,int index){
         
         expression.o = new Exp();
-        Operator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
+        Calculator.loadSelfBracketLike(expString, expression,pattern,index+pattern.length());
     }
 }

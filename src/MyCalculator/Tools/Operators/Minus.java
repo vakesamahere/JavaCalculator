@@ -33,6 +33,6 @@ public class Minus extends Operator {
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new Minus();
-        Operator.loadSelfSingle(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfSingle(expString, expression,pattern,left,right,index);
     }
 }

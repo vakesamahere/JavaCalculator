@@ -2,6 +2,7 @@ package mycalculator.tools.operators;
 import mycalculator.Lobby;
 import mycalculator.entity.Expression;
 import mycalculator.tools.Operator;
+import mycalculator.tools.Calculator;
 
 public class ArrayPower extends Operator {
     public final static String pattern = pattrnFix+Power.pattern+pattrnFix;
@@ -11,7 +12,7 @@ public class ArrayPower extends Operator {
     public ArrayPower(){
     }
     public String solve(){
-        String[] arr = Operator.stringToArray(parameters[0]);
+        String[] arr = Calculator.stringToArray(parameters[0]);
         //方阵
         int n=arr.length;
         int times = (int)Double.parseDouble(parameters[1]);
@@ -21,7 +22,7 @@ public class ArrayPower extends Operator {
                 I[i][j]=(i==j)?"1":"0";
             }
         }
-        String output = Operator.matrixToString(I);
+        String output = Calculator.matrixToString(I);
         ArrayTime arraytime = new ArrayTime();
         arraytime.setPa(2, "array");
         arraytime.setPa(3, "array");
@@ -35,6 +36,6 @@ public class ArrayPower extends Operator {
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new ArrayPower();
-        Operator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
     }
 }

@@ -8,16 +8,13 @@ import mycalculator.tools.Calculator;
 import mycalculator.tools.ComponentEditor;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class VariableRigisterLabel extends JPanel implements ActionListener,ComponentListener{
+public class VariableRigisterLabel extends JPanel {
     private static final Color buttonColor = new Color(253, 253, 253);
     private JLabel nameSign = new JLabel("Var");
     private JLabel valueSign = new JLabel("Value");
@@ -29,13 +26,28 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
     private List<RegistedVar> perList = new ArrayList<>();
 
     public VariableRigisterLabel(String name,JComponent father,double posX,double posY,double sizeX,double sizeY){
-        this.setLayout(null);
-        this.addComponentListener(this);
+        setLayout(null);
+        addComponentListener(new ComponentAdapter(){
+            @Override
+            public void componentResized(ComponentEvent e) {
+                refreshComponent();
+            }
+        });
         nameDisplayer.setText(name);
         ComponentEditor.initializeComponentBody(this,father,posX,posY,sizeX,sizeY);
         setBorder(BorderFactory.createLineBorder(Color.gray));
-        register.addActionListener(this);
-        nameDisplayer.addActionListener(this);
+        register.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                createNewVariable();
+            }
+        });
+        nameDisplayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                clearList();
+            }
+        });
         register.setBackground(buttonColor);
         nameDisplayer.setBackground(buttonColor);
 
@@ -141,26 +153,5 @@ public class VariableRigisterLabel extends JPanel implements ActionListener,Comp
         varList.add(pos+2, va);
         varList.remove(pos);
         refreshVarDisplay();
-    }
-    public void actionPerformed(ActionEvent e){
-        if(e.getSource()==register){
-            createNewVariable();
-        }
-        if(e.getSource()==nameDisplayer){
-            clearList();
-        }
-    }
-    @Override
-    public void componentResized(ComponentEvent e) {
-        refreshComponent();
-    }
-    @Override
-    public void componentMoved(ComponentEvent e) {
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-    }
-    @Override
-    public void componentHidden(ComponentEvent e) {
     }
 }

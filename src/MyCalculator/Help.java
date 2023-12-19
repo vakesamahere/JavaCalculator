@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-import mycalculator.tools.operators.ArrayAdd;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 public class Help {

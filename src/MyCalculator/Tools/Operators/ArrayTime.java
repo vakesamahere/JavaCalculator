@@ -21,10 +21,10 @@ public class ArrayTime extends Operator {
         }
         //else>>内积
 
-        String[] array1 = Operator.stringToArray(parameters[0]);
-        String[] array2 = Operator.stringToArray(parameters[1]);
-        String[][] matrix1= Operator.arrayToMatrix(array1);
-        String[][] matrix2= Operator.arrayToMatrix(array2);
+        String[] array1 = Calculator.stringToArray(parameters[0]);
+        String[] array2 = Calculator.stringToArray(parameters[1]);
+        String[][] matrix1= Calculator.arrayToMatrix(array1);
+        String[][] matrix2= Calculator.arrayToMatrix(array2);
         //
         int m1=matrix1.length;
         int len=Math.min(matrix1[0].length,matrix2.length);
@@ -39,25 +39,25 @@ public class ArrayTime extends Operator {
                 matrixRes[i][j]=sum;
             }
         }
-        String output = Operator.matrixToString(matrixRes);
+        String output = Calculator.matrixToString(matrixRes);
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s*%s=%s", parameters[0],parameters[1],output));
         return output;
     }
     /**数乘*/
     public String solveNA(String num,String array){
-        String[] arr = Operator.stringToArray(array);
+        String[] arr = Calculator.stringToArray(array);
         int n=arr.length;
         String[] arrayRes = new String[n];
         for(int i=0;i<n;i++){
             arrayRes[i]=Calculator.cal(String.format(" %s %s %s ",Calculator.cal(num),Time.pattern,Calculator.cal(arr[i])));
         }
-        String output = Operator.arrayToString(arrayRes);
+        String output = Calculator.arrayToString(arrayRes);
         Lobby.getLogDisplayer().addLog(String.format("[Output]%s*%s=%s", array,num,output));
 
         return output;
     }
     public static void loadSelf(String expString,Expression expression,int index){
         expression.o = new ArrayTime();
-        Operator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
+        Calculator.loadSelfArrayIncluded(expString, expression,pattern,left,right,index);
     }
 }
